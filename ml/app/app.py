@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, send_from_directory
+from flask import Flask, request, jsonify
 from functions.predictions import generate_caption
 from models.models import get_encoder, get_decoder
 
@@ -22,33 +22,25 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/', methods=['GET', 'POST'])
-def hello():
+@app.route('/caption', methods=['POST'])
+def caption():
     if request.method == 'POST':
         # check if the post request has the file part
+        image = None
+        file = None
         if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
+            image = request.get_json()['image']
+        else:
+            file = request.files['file']
         if file and allowed_file(file.filename):
             image = file.read()
-            result = generate_caption(
-                encoder=encoder,
-                decoder=decoder,
-                image=image
-            )
-            caption = " ".join(result)
-            print(caption)
-            return f"<h1>{caption}</h1>"
-
-    return '''
-        <!doctype html>
-        <title>Upload new File</title>
-        <h1>Upload new File</h1>
-        <form method=post enctype=multipart/form-data>
-          <input type=file name=file>
-          <input type=submit value=Upload>
-        </form>
-        '''
+        result = generate_caption(
+            encoder=encoder,
+            decoder=decoder,
+            image=image
+        )
+        generated_caption = " ".join(result[:-1])
+        return jsonify({"generated_caption": generated_caption})
 
 
 if __name__ == '__main__':

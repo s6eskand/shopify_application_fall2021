@@ -1,5 +1,6 @@
 import tensorflow as tf
 import pickle
+import requests
 
 
 def calc_max_length(tensor):
@@ -7,8 +8,10 @@ def calc_max_length(tensor):
 
 
 def load_image(image):
-    # img = tf.io.read_file(image_path)
-    img = tf.image.decode_image(image, channels=3)
+    img = image
+    if isinstance(image, str):
+        img = requests.get(img).content
+    img = tf.image.decode_image(img, channels=3)
     img = tf.image.resize(img, (299, 299))
     img = tf.keras.applications.inception_v3.preprocess_input(img)
     return img
