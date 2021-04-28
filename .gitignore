@@ -1,4 +1,5 @@
 *.pyc
+/ml/.idea
 /ml/venv
 /ml/annotations
 /ml/train2014
