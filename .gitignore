@@ -1,0 +1,6 @@
+*.pyc
+/ml/venv
+/ml/annotations
+/ml/train2014
+/ml/.ipynb_checkpoints
+/ml/checkpoints
