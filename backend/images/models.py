@@ -6,3 +6,4 @@ class Image(models.Model):
     image = models.FileField(null=True)
     image_data = models.BinaryField(null=True)
     caption = models.TextField(max_length=100)
+    title = models.CharField(max_length=100, default="Untitled")

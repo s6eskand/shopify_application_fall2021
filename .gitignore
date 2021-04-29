@@ -1,4 +1,7 @@
 *.pyc
+/backend/shopify_backend_venv
+/backend/.idea
+/backend/images/migrations/
 
 /ml/.idea
 /ml/venv
@@ -11,12 +14,8 @@
 /frontend/node_modules
 /frontend/.pnp
 /frontend/.pnp.js
-
-# testing
 /frontend/coverage
-
 /frontend/build
-
 /frontend/.env.local
 /frontend/.env.development.local
 /frontend/.env.test.local
