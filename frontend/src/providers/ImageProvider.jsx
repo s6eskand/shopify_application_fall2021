@@ -1,4 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
+import {
+    generateCaptionRequest_URL
+} from "../api/predictionrequests";
 
 export const ImageContext = createContext({
     filteredImages: [],
@@ -6,6 +9,7 @@ export const ImageContext = createContext({
     setSearch: () => { },
     aboutDialog: false,
     isLoading: false,
+    generateCaption: () => { },
 })
 
 const ImageProvider = ({ children }) => {
@@ -22,12 +26,17 @@ const ImageProvider = ({ children }) => {
         }
     }, [search])
 
+    const generateCaption = (imageUrl) => {
+        return generateCaptionRequest_URL({ image: imageUrl });
+    }
+
     return (
         <ImageContext.Provider
             value={{
                 filteredImages,
                 search,
                 setSearch,
+                generateCaption,
             }}
         >
             {children}
