@@ -1,0 +1,31 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.root {
+    margin-top: 0.5rem;
+    padding: 100px 0.5rem;
+    background-color: #F3F8FF;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.button {
+    background-color: #0450D5 !important;
+    color: #f9f9f9 !important;
+}
+
+@media screen and (max-width: 500px) {
+    .content {
+        flex-direction: column;
+    }
+}
