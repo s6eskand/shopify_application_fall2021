@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from functions.predictions import generate_caption
 from models.models import get_encoder, get_decoder
 
@@ -14,6 +15,7 @@ features_shape = 2048
 attention_features_shape = 64
 
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
