@@ -69,7 +69,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'shopifyapplicationdb',
         'USER': 'postgres',
-        'PASSWORD': '*******',
+        'PASSWORD': 'Ozilrox22',
         'HOST': 'localhost',
         'PORT': '5432'
     }
