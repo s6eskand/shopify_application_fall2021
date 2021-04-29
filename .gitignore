@@ -2,6 +2,7 @@
 /backend/shopify_backend_venv
 /backend/.idea
 /backend/images/migrations/
+/backend/media
 
 /ml/.idea
 /ml/venv
