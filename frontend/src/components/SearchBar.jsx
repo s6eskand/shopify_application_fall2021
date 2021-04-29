@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Paper, InputBase, IconButton, Divider } from "@material-ui/core";
 import { Search, Tune } from "@material-ui/icons";
 import styles from '../../styles/SearchBar.module.css';
-import ImageProvider, { ImageContext } from "../providers/ImageProvider";
+import { ImageContext } from "../providers/ImageProvider";
 
 function SearchBar() {
     const { search, setSearch } = useContext(ImageContext);
@@ -31,10 +31,4 @@ function SearchBar() {
     )
 }
 
-export default () => {
-    return (
-        <ImageProvider>
-            <SearchBar />
-        </ImageProvider>
-    )
-};
+export default SearchBar;

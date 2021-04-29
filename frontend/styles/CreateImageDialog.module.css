@@ -1,0 +1,54 @@
+
+.row {
+    display: flex;
+}
+
+.rowCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.filelabel {
+    border: 1px solid #0450d5;
+    color: #0450D5;
+    border-radius: 4px;
+    margin: 20px 0;
+    display: flex;
+    width: 130px;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px 16px;
+    transition: background-color 0.25s ease;
+    cursor: pointer;
+}
+
+.filelabel:hover {
+    background-color: rgba(4, 80, 213, 0.5);
+}
+
+.fileselect {
+    display: none;
+}
+
+.imageinput {
+    margin-left: 10px !important;
+}
+
+.buttonWrapper {
+    margin: 8px;
+    position: relative;
+}
+
+.buttonProgress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+}
+
+.displayImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

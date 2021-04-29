@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from functions.predictions import generate_caption
 from models.models import get_encoder, get_decoder
 
@@ -15,8 +15,8 @@ features_shape = 2048
 attention_features_shape = 64
 
 app = Flask(__name__)
-CORS(app)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app, resources={r"/caption": {"origins": "http://localhost:3000"}})
 
 
 def allowed_file(filename):
@@ -25,6 +25,7 @@ def allowed_file(filename):
 
 
 @app.route('/caption', methods=['POST'])
+@cross_origin(origin="localhost", headers=["Content-Type"])
 def caption():
     if request.method == 'POST':
         # check if the post request has the file part
