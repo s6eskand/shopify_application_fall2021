@@ -10,6 +10,6 @@ export const generateCaptionRequest_URL = (data) => {
         PREDICTIONS_BASE_URL + ENDPOINTS.CAPTION,
         data
     )
-        .then(res => res.data)
+        .then(res => res)
         .catch(err => console.error(err))
 }

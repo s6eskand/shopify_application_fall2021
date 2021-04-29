@@ -23,7 +23,7 @@
 }
 
 .filelabel:hover {
-    background-color: rgba(4, 80, 213, 0.5);
+    background-color: rgba(4, 80, 213, 0.1);
 }
 
 .fileselect {

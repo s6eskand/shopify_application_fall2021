@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { listImages } from "../api/imagecrud";
 
 export const ImageContext = createContext({
     filteredImages: [],
@@ -6,12 +7,13 @@ export const ImageContext = createContext({
     setSearch: () => { },
     aboutDialog: false,
     isLoading: false,
-    captionLoading: false,
+    imagesLoading: false,
 })
 
 const ImageProvider = ({ children }) => {
     const [filteredImages, setFilteredImages] = useState([]);
     const [search, setSearch] = useState("");
+    const [imagesLoading, setImagesLoading] = useState(true);
 
     useEffect(() => {
         if (filteredImages.length > 0) {
@@ -23,12 +25,28 @@ const ImageProvider = ({ children }) => {
         }
     }, [search])
 
+    useEffect(() => {
+        (async () => {
+            setImagesLoading(true);
+            const response = await listImages();
+            if (response.status !== 200) {
+                // error handling
+                setImagesLoading(false);
+                return;
+            }
+            const imageList = await response.data;
+            setFilteredImages([...imageList])
+            setImagesLoading(false);
+        })()
+    }, [])
+
     return (
         <ImageContext.Provider
             value={{
                 filteredImages,
                 search,
                 setSearch,
+                imagesLoading,
             }}
         >
             {children}

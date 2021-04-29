@@ -142,6 +142,14 @@ function CreateImageDialog({ open, handleClose }) {
                 >
                     Cancel
                 </Button>
+                <Button
+                    variant="outlined"
+                    onClick={handleClose}
+                    color="primary"
+                    disabled={!state.title && !state.caption && !state.image}
+                >
+                    Create
+                </Button>
             </DialogActions>
         </Dialog>
     )

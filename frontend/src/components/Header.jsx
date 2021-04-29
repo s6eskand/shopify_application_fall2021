@@ -19,8 +19,8 @@ function HeaderContent() {
                 <div className={styles.container}>
                     <div className={styles.content}>
                         <SearchBar />
-                        <Button variant="outlined" className={styles.button}>
-                            <Add onClick={handleOpen} /> New
+                        <Button variant="outlined" className={styles.button} onClick={handleOpen}>
+                            <Add /> New
                         </Button>
                     </div>
                 </div>
