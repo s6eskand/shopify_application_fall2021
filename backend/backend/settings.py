@@ -13,7 +13,9 @@ SECRET_KEY = 'fl%-eg8r%6&uifqb!e7^o494a@batr%y&$fb^)4(&+=z@jo5#1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost'
+]
 
 
 # Application definition
@@ -27,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'images',
-    'corsheaders'
+    'corsheaders',
+    'versatileimagefield',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +127,6 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000'
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
