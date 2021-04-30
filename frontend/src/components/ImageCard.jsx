@@ -1,5 +1,14 @@
 import React from 'react';
-import { Card, CardHeader, CardMedia, CardContent, CardActions, Typography, IconButton, Tooltip } from "@material-ui/core";
+import {
+    Card,
+    CardHeader,
+    CardMedia,
+    CardContent,
+    CardActions,
+    Typography,
+    IconButton,
+    Tooltip
+} from "@material-ui/core";
 import { Link, OpenInNew, Reply } from "@material-ui/icons";
 import styles from '../../styles/ImageCard.module.css';
 

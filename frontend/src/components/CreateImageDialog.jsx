@@ -6,7 +6,9 @@ import {
     TextField,
     DialogTitle,
     Button,
-    DialogContentText, CircularProgress
+    DialogContentText,
+    CircularProgress,
+    useMediaQuery
 } from "@material-ui/core";
 import {
     generateCaptionRequest_URL
@@ -21,6 +23,7 @@ function CreateImageDialog({ open, handleClose }) {
         image: null,
         imageUrl: "",
     })
+    const fullscreen = useMediaQuery("(max-width:760px)");
 
     const handleChange = (event) => {
         setState({
@@ -39,14 +42,15 @@ function CreateImageDialog({ open, handleClose }) {
     const generateCaption = async () => {
         setCaptionLoading(true);
         try {
-            const response = await generateCaptionRequest_URL(state.imageUrl);
+            const data = { image: state.imageUrl }
+            const response = await generateCaptionRequest_URL(data);
             if (response.status === 500 || response.status === 400) {
                 return;
             }
-            const caption = await response.data;
+            const { generated_caption } = await response.data;
             setState({
                 ...state,
-                caption
+                caption: generated_caption
             })
         } catch (e) {
             // handle error
@@ -55,7 +59,7 @@ function CreateImageDialog({ open, handleClose }) {
     }
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} fullScreen={fullscreen}>
             <DialogTitle>Add New Image to Library</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -88,7 +92,7 @@ function CreateImageDialog({ open, handleClose }) {
                             margin="dense"
                             value={state.imageUrl}
                             placeholder="Image URL"
-                            label="Remote Image URL"
+                            label="Image URL"
                             name="imageUrl"
                             onChange={handleChange}
                             onBlur={handleImageURLChange}
