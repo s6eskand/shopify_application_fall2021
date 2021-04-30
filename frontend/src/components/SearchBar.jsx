@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Paper, InputBase, IconButton, Divider } from "@material-ui/core";
-import { Search, Tune } from "@material-ui/icons";
+import { Search, ImageSearch } from "@material-ui/icons";
 import styles from '../../styles/SearchBar.module.css';
 import { ImageContext } from "../providers/ImageProvider";
 
@@ -25,7 +25,7 @@ function SearchBar() {
             />
             <Divider orientation="vertical" className={styles.divider} />
             <IconButton className={styles.iconButton}>
-                <Tune />
+                <ImageSearch />
             </IconButton>
         </Paper>
     )

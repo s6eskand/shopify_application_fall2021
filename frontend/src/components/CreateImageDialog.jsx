@@ -38,15 +38,19 @@ function CreateImageDialog({ open, handleClose }) {
 
     const generateCaption = async () => {
         setCaptionLoading(true);
-        const response = await generateCaptionRequest_URL(state.imageUrl);
-        if (response.status === 500 || response.status === 400) {
-            return;
+        try {
+            const response = await generateCaptionRequest_URL(state.imageUrl);
+            if (response.status === 500 || response.status === 400) {
+                return;
+            }
+            const caption = await response.data;
+            setState({
+                ...state,
+                caption
+            })
+        } catch (e) {
+            // handle error
         }
-        const caption = await response.data;
-        setState({
-            ...state,
-            caption
-        })
         setCaptionLoading(false);
     }
 

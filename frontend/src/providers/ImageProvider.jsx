@@ -28,15 +28,20 @@ const ImageProvider = ({ children }) => {
     useEffect(() => {
         (async () => {
             setImagesLoading(true);
-            const response = await listImages();
-            if (response.status !== 200) {
-                // error handling
+            try {
+                const response = await listImages();
+                if (response.status !== 200) {
+                    // error handling
+                    setImagesLoading(false);
+                    return;
+                }
+                const imageList = await response.data;
+                setFilteredImages([...imageList])
                 setImagesLoading(false);
-                return;
+            } catch (e) {
+                // handle error
+                setImagesLoading(false);
             }
-            const imageList = await response.data;
-            setFilteredImages([...imageList])
-            setImagesLoading(false);
         })()
     }, [])
 

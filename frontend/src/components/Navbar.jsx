@@ -8,7 +8,7 @@ function Navbar() {
         <div className={styles.root}>
             <AppBar position="static" className={styles.appbar}>
                 <Toolbar>
-                    <Typography variant="h4" className={styles.title}>
+                    <Typography variant="h5" className={styles.title}>
                         Image Library
                     </Typography>
                     <IconButton className={styles.menuButton}>

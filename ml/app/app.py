@@ -15,8 +15,15 @@ features_shape = 2048
 attention_features_shape = 64
 
 app = Flask(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
-cors = CORS(app, resources={r"/caption": {"origins": "http://localhost:3000"}})
+CORS(
+    app,
+    allow_headers=[
+        'Content-Type',
+        'Access-Control-Allow-Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Methods'
+    ]
+)
 
 
 def allowed_file(filename):
@@ -24,8 +31,23 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.after_request
+def apply_caching(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET,OPTIONS,POST"
+    response.headers["Access-Control-Allow-Headers"] = \
+        "Access-Control-Allow-Headers,  Access-Control-Allow-Origin, Origin,Accept, " + \
+        "X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+    return response
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({"test": True})
+
+
 @app.route('/caption', methods=['POST'])
-@cross_origin(origin="localhost", headers=["Content-Type"])
 def caption():
     if request.method == 'POST':
         # check if the post request has the file part

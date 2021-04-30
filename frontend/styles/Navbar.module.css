@@ -11,6 +11,7 @@
 }
 
 .title {
+    line-height: 33px !important;
     flex-grow: 1;
     color: #000;
     font-weight: bold !important;
