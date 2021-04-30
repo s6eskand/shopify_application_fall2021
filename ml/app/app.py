@@ -50,7 +50,6 @@ def test():
 @app.route('/caption', methods=['POST'])
 def caption():
     if request.method == 'POST':
-        # check if the post request has the file part
         image = None
         file = None
         if 'file' not in request.files:
