@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ImageProvider, { ImageContext } from "../../providers/ImageProvider";
 import ImageCard from "./ImageCard";
 import styles from '../../../styles/ImageList.module.css';
@@ -6,7 +6,13 @@ import { Divider, Typography } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 
 function ImageListContent() {
-    const { filteredImages, loadingImages, search } = useContext(ImageContext);
+    const { filteredImages, loadingImages, search, listImages } = useContext(ImageContext);
+
+    useEffect(() => {
+        (async () => {
+            await listImages()
+        })()
+    }, [])
 
     return (
         <div className={styles.container}>

@@ -1,5 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { listImages } from "../api/imagecrud";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { listImagesRequest, createImageRequest } from "../api/imagecrud";
+import { generateCaptionRequest_URL } from "../api/predictionrequests";
+import AlertProvider, { AlertContext } from "./AlertProvider";
 
 export const ImageContext = createContext({
     filteredImages: [],
@@ -8,12 +10,23 @@ export const ImageContext = createContext({
     aboutDialog: false,
     isLoading: false,
     imagesLoading: false,
+    generateCaption: () => { },
+    captionLoading: false,
+    createImageLoading: false,
+    openDialog: false,
+    setOpenDialog: () => { },
+    createImage: () => { },
+    listImages: () => { },
 })
 
 const ImageProvider = ({ children }) => {
+    const { openAlertSnackbar } = useContext(AlertContext)
     const [filteredImages, setFilteredImages] = useState([]);
     const [search, setSearch] = useState("");
-    const [imagesLoading, setImagesLoading] = useState(true);
+    const [imagesLoading, setImagesLoading] = useState(false);
+    const [captionLoading, setCaptionLoading] = useState(false);
+    const [createImageLoading, setCreateImageLoading] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         if (filteredImages.length > 0) {
@@ -25,25 +38,68 @@ const ImageProvider = ({ children }) => {
         }
     }, [search])
 
-    useEffect(() => {
-        (async () => {
-            setImagesLoading(true);
+    const listImages = async () => {
+        setImagesLoading(true);
             try {
-                const response = await listImages();
-                if (response.status !== 200) {
-                    // error handling
-                    setImagesLoading(false);
-                    return;
-                }
+                const response = await listImagesRequest();
                 const imageList = await response.data;
                 setFilteredImages([...imageList])
                 setImagesLoading(false);
-            } catch (e) {
-                // handle error
+            } catch {
+                openAlertSnackbar(
+                    "error",
+                    5000,
+                    "Oops! Something went wrong. Please try again.",
+                    "Something went wrong..."
+                )
                 setImagesLoading(false);
             }
-        })()
-    }, [])
+    }
+
+    const generateCaption = async (imageUrl) => {
+        setCaptionLoading(true);
+        try {
+            const data = { image: imageUrl }
+            const response = await generateCaptionRequest_URL(data);
+            if (response.status === 400) {
+                openAlertSnackbar(
+                    "error",
+                    5000,
+                    "Please send a valid image URL"
+                )
+                return;
+            }
+            const { generated_caption } = await response.data;
+            setCaptionLoading(false);
+            return generated_caption;
+        } catch {
+            openAlertSnackbar(
+                "error",
+                5000,
+                "Oops! Something went wrong. Please try again.",
+                "Something went wrong..."
+            )
+            setCaptionLoading(false);
+        }
+    }
+
+    const createImage = async (data) => {
+        setCreateImageLoading(true);
+        try {
+            await createImageRequest(data);
+            setCreateImageLoading(false);
+            return true;
+        } catch {
+            openAlertSnackbar(
+                "error",
+                5000,
+                "Oops! Something went wrong. Please try again.",
+                "Something went wrong..."
+            )
+            setCreateImageLoading(false);
+            return false;
+        }
+    }
 
     return (
         <ImageContext.Provider
@@ -52,6 +108,13 @@ const ImageProvider = ({ children }) => {
                 search,
                 setSearch,
                 imagesLoading,
+                generateCaption,
+                captionLoading,
+                createImageLoading,
+                openDialog,
+                setOpenDialog,
+                createImage,
+                listImages
             }}
         >
             {children}

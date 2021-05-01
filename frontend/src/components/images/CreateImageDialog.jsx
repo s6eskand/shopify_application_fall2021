@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Dialog,
     DialogActions,
@@ -10,49 +10,22 @@ import {
     CircularProgress,
     useMediaQuery
 } from "@material-ui/core";
-import {
-    generateCaptionRequest_URL
-} from "../../api/predictionrequests";
 import styles from '../../../styles/CreateImageDialog.module.css';
 import AlertSnackbar from "../globals/AlertSnackbar";
+import { AlertContext } from "../../providers/AlertProvider";
+import { ImageContext } from "../../providers/ImageProvider";
 
 function CreateImageDialog({ open, handleClose }) {
-    const [captionLoading, setCaptionLoading] = useState(false);
     const [state, setState] = useState({
         title: "",
         caption: "",
-        image: null,
+        image: "",
         imageUrl: "",
-        openAlert: false,
-        message: "",
-        severity: "",
-        timeout: 3000,
-        alertTitle: "",
         captionError: false,
     })
     const fullscreen = useMediaQuery("(max-width:760px)");
-
-    useEffect(() => {
-        setTimeout(() => {
-            setState({
-                ...state,
-                openAlert: false
-            })
-        }, state.timeout)
-    }, [state.openAlert])
-
-    const openAlertSnackbar = (severity, timeout, message, alertTitle = "") => {
-        const captionError = alertTitle.length === 0;
-        setState({
-            ...state,
-            openAlert: true,
-            severity,
-            timeout,
-            message,
-            alertTitle,
-            captionError
-        })
-    }
+    const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
+    const { generateCaption, captionLoading, createImageLoading, createImage, listImages } = useContext(ImageContext);
 
     const handleChange = (event) => {
         setState({
@@ -61,53 +34,103 @@ function CreateImageDialog({ open, handleClose }) {
         });
     }
 
+    const handleCancel = () => {
+        setState({
+            title: "",
+            caption: "",
+            image: "",
+            imageUrl: "",
+            captionError: false,
+        })
+        handleClose();
+    }
+
+    const handleGenerateCaption = async () => {
+        const caption = await generateCaption(state.imageUrl);
+        if (caption) {
+            setState({
+                ...state,
+                caption
+            })
+        } else {
+            setState({
+                ...state,
+                captionError: true
+            })
+        }
+    }
+
+    const convertBlobToFile = () => {
+        const contentType = state.image.mimeType.split("/")[1]
+        const filename = state.title + "." + contentType;
+        return new File([state.image], filename, contentType);
+    }
+
+    const handleCreate = async () => {
+        const data = new FormData();
+        data.append("image", convertBlobToFile());
+        data.append("title", state.title);
+        data.append("caption", state.caption);
+        const created = createImage(data);
+        if (created) {
+            listImages();
+            handleCancel();
+            openAlertSnackbar(
+                "success",
+                6000,
+                "A new image has been added to the repository",
+                "Successfully created image"
+            );
+        }
+    }
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = (event) => {
+                setState({
+                    ...state,
+                    image: event.target.result,
+                    captionError: false
+                })
+            }
+            fileReader.onerror = (event) => {
+                openAlertSnackbar(
+                    "error",
+                    3000,
+                    "Error reading file contents"
+                )
+            }
+        }
+    }
+
     const isValidURL = (url) => {
         const res = url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
         return res !== null
     }
 
     const handleImageURLChange = () => {
-        if (isValidURL(state.imageUrl)) {
-            setState({
-                ...state,
-                image: state.imageUrl,
-                captionError: false
-            })
-        } else {
-            openAlertSnackbar(
-                "error",
-                3000,
-                "Please enter a valid URL."
-            )
-        }
-    }
-
-    const generateCaption = async () => {
-        setCaptionLoading(true);
-        try {
-            const data = { image: state.imageUrl }
-            const response = await generateCaptionRequest_URL(data);
-            if (response.status === 400) {
+        if (state.imageUrl !== "") {
+            if (isValidURL(state.imageUrl)) {
+                setState({
+                    ...state,
+                    image: state.imageUrl,
+                    captionError: false
+                })
+            } else {
+                setState({
+                    ...state,
+                    captionError: true
+                })
                 openAlertSnackbar(
                     "error",
-                    5000,
-                    "Please send a valid image URL"
+                    3000,
+                    "Not a valid image URL!"
                 )
             }
-            const { generated_caption } = await response.data;
-            setState({
-                ...state,
-                caption: generated_caption
-            })
-        } catch {
-            openAlertSnackbar(
-                "error",
-                5000,
-                "Oops! Something went wrong. Please try again.",
-                "Something went wrong..."
-            )
         }
-        setCaptionLoading(false);
     }
 
     return (
@@ -137,6 +160,7 @@ function CreateImageDialog({ open, handleClose }) {
                                 className={styles.fileselect}
                                 type="file"
                                 accept="image/png, image/jpeg, image/jpg"
+                                onChange={handleFileChange}
                             />
                         </label>
                         <TextField
@@ -151,12 +175,11 @@ function CreateImageDialog({ open, handleClose }) {
                             onBlur={handleImageURLChange}
                         />
                     </div>
-                    {state.image !== null ?
+                    {state.image !== "" ?
                         <div className={styles.displayImage}>
                             <img
                                 src={state.image}
                                 width={250}
-                                height={250}
                                 alt={state.caption}
                             />
                         </div> : null
@@ -175,9 +198,9 @@ function CreateImageDialog({ open, handleClose }) {
                             <Button
                                 variant="outlined"
                                 color="primary"
-                                disabled={(!state.imageUrl && !state.image) || captionLoading || state.captionError}
+                                disabled={(!state.imageUrl && state.image === "") || captionLoading || state.captionError}
                                 style={{ marginRight: 10 }}
-                                onClick={generateCaption}
+                                onClick={handleGenerateCaption}
                             >
                                 Generate Caption
                             </Button>
@@ -187,7 +210,7 @@ function CreateImageDialog({ open, handleClose }) {
                             <Button
                                 variant="outlined"
                                 color="primary"
-                                disabled={!state.caption || state.image}
+                                disabled={!state.caption}
                             >
                                 Generate Image
                             </Button>
@@ -198,26 +221,29 @@ function CreateImageDialog({ open, handleClose }) {
             <DialogActions>
                 <Button
                     variant="outlined"
-                    onClick={handleClose}
+                    onClick={handleCancel}
                     color="secondary"
                 >
                     Cancel
                 </Button>
-                <Button
-                    variant="outlined"
-                    onClick={handleClose}
-                    color="primary"
-                    disabled={!state.title && !state.caption && !state.image}
-                >
-                    Create
-                </Button>
+                <div className={styles.buttonWrapper}>
+                    <Button
+                        variant="outlined"
+                        onClick={handleCreate}
+                        color="primary"
+                        disabled={!state.title || !state.caption || state.image === ""}
+                    >
+                        Create
+                    </Button>
+                    {createImageLoading && <CircularProgress size={24} className={styles.buttonProgress} />}
+                </div>
             </DialogActions>
         </Dialog>
         <AlertSnackbar
-            open={state.openAlert}
-            message={state.message}
-            severity={state.severity}
-            title={state.alertTitle}
+            open={openAlert}
+            message={message}
+            severity={severity}
+            title={alertTitle}
         />
         </>
     )

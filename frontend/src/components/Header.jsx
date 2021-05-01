@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import SearchBar from "./SearchBar";
 import { Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import styles from '../../styles/Header.module.css';
-import ImageProvider from "../providers/ImageProvider";
+import ImageProvider, { ImageContext } from "../providers/ImageProvider";
+import AlertProvider from "../providers/AlertProvider";
 import CreateImageDialog from "./images/CreateImageDialog";
 
 function HeaderContent() {
-    const [open, setOpen] = useState(false);
+    const { openDialog, setOpenDialog } = useContext(ImageContext);
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleOpen = () => setOpenDialog(true);
+    const handleClose = () => setOpenDialog(false);
 
     return (
         <>
-            <CreateImageDialog open={open} handleClose={handleClose} />
+            <CreateImageDialog open={openDialog} handleClose={handleClose} />
             <div className={styles.root}>
                 <div className={styles.container}>
                     <div className={styles.content}>
@@ -31,9 +32,11 @@ function HeaderContent() {
 
 const Header = () => {
     return (
-        <ImageProvider>
-            <HeaderContent />
-        </ImageProvider>
+        <AlertProvider>
+            <ImageProvider>
+                <HeaderContent />
+            </ImageProvider>
+        </AlertProvider>
     )
 };
 
