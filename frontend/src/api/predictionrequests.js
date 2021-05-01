@@ -11,5 +11,23 @@ export const generateCaptionRequest_URL = (data) => {
         data
     )
         .then(res => res)
-        .catch(err => console.error(err))
+        .catch(err => {
+            throw new Error(err)
+        })
+}
+
+export const generateCaptionRequest_FILE = (formData) => {
+    return axios.post(
+        PREDICTIONS_BASE_URL + ENDPOINTS.CAPTION,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+    )
+        .then(res => res)
+        .catch(err => {
+            throw new Error(err)
+        })
 }
