@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Dialog,
     DialogActions,
@@ -14,6 +14,7 @@ import {
     generateCaptionRequest_URL
 } from "../api/predictionrequests";
 import styles from '../../styles/CreateImageDialog.module.css';
+import AlertSnackbar from "./globals/AlertSnackbar";
 
 function CreateImageDialog({ open, handleClose }) {
     const [captionLoading, setCaptionLoading] = useState(false);
@@ -22,8 +23,36 @@ function CreateImageDialog({ open, handleClose }) {
         caption: "",
         image: null,
         imageUrl: "",
+        openAlert: false,
+        message: "",
+        severity: "",
+        timeout: 3000,
+        alertTitle: "",
+        captionError: false,
     })
     const fullscreen = useMediaQuery("(max-width:760px)");
+
+    useEffect(() => {
+        setTimeout(() => {
+            setState({
+                ...state,
+                openAlert: false
+            })
+        }, state.timeout)
+    }, [state.openAlert])
+
+    const openAlertSnackbar = (severity, timeout, message, alertTitle = "") => {
+        const captionError = alertTitle.length === 0;
+        setState({
+            ...state,
+            openAlert: true,
+            severity,
+            timeout,
+            message,
+            alertTitle,
+            captionError
+        })
+    }
 
     const handleChange = (event) => {
         setState({
@@ -32,11 +61,25 @@ function CreateImageDialog({ open, handleClose }) {
         });
     }
 
+    const isValidURL = (url) => {
+        const res = url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        return res !== null
+    }
+
     const handleImageURLChange = () => {
-        setState({
-            ...state,
-            image: state.imageUrl
-        })
+        if (isValidURL(state.imageUrl)) {
+            setState({
+                ...state,
+                image: state.imageUrl,
+                captionError: false
+            })
+        } else {
+            openAlertSnackbar(
+                "error",
+                3000,
+                "Please enter a valid URL."
+            )
+        }
     }
 
     const generateCaption = async () => {
@@ -44,21 +87,31 @@ function CreateImageDialog({ open, handleClose }) {
         try {
             const data = { image: state.imageUrl }
             const response = await generateCaptionRequest_URL(data);
-            if (response.status === 500 || response.status === 400) {
-                return;
+            if (response.status === 400) {
+                openAlertSnackbar(
+                    "error",
+                    5000,
+                    "Please send a valid image URL"
+                )
             }
             const { generated_caption } = await response.data;
             setState({
                 ...state,
                 caption: generated_caption
             })
-        } catch (e) {
-            // handle error
+        } catch {
+            openAlertSnackbar(
+                "error",
+                5000,
+                "Oops! Something went wrong. Please try again.",
+                "Something went wrong..."
+            )
         }
         setCaptionLoading(false);
     }
 
     return (
+        <>
         <Dialog open={open} fullScreen={fullscreen}>
             <DialogTitle>Add New Image to Library</DialogTitle>
             <DialogContent>
@@ -122,7 +175,7 @@ function CreateImageDialog({ open, handleClose }) {
                             <Button
                                 variant="outlined"
                                 color="primary"
-                                disabled={(!state.imageUrl && !state.image) || captionLoading}
+                                disabled={(!state.imageUrl && !state.image) || captionLoading || state.captionError}
                                 style={{ marginRight: 10 }}
                                 onClick={generateCaption}
                             >
@@ -160,6 +213,13 @@ function CreateImageDialog({ open, handleClose }) {
                 </Button>
             </DialogActions>
         </Dialog>
+        <AlertSnackbar
+            open={state.openAlert}
+            message={state.message}
+            severity={state.severity}
+            title={state.alertTitle}
+        />
+        </>
     )
 }
 
