@@ -4,7 +4,7 @@ import { Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import styles from '../../styles/Header.module.css';
 import ImageProvider from "../providers/ImageProvider";
-import CreateImageDialog from "./CreateImageDialog";
+import CreateImageDialog from "./images/CreateImageDialog";
 
 function HeaderContent() {
     const [open, setOpen] = useState(false);

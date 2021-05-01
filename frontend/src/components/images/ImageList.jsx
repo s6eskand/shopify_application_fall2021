@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import ImageProvider, { ImageContext } from "../providers/ImageProvider";
+import ImageProvider, { ImageContext } from "../../providers/ImageProvider";
 import ImageCard from "./ImageCard";
-import styles from '../../styles/ImageList.module.css';
+import styles from '../../../styles/ImageList.module.css';
 import { Divider, Typography } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 

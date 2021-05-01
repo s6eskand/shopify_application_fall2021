@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Navbar from "../src/components/Navbar";
 import Header from "../src/components/Header";
-import ImageList from "../src/components/ImageList";
+import ImageList from "../src/components/images/ImageList";
 
 function Home() {
     return (

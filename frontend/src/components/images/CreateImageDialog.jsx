@@ -12,9 +12,9 @@ import {
 } from "@material-ui/core";
 import {
     generateCaptionRequest_URL
-} from "../api/predictionrequests";
-import styles from '../../styles/CreateImageDialog.module.css';
-import AlertSnackbar from "./globals/AlertSnackbar";
+} from "../../api/predictionrequests";
+import styles from '../../../styles/CreateImageDialog.module.css';
+import AlertSnackbar from "../globals/AlertSnackbar";
 
 function CreateImageDialog({ open, handleClose }) {
     const [captionLoading, setCaptionLoading] = useState(false);

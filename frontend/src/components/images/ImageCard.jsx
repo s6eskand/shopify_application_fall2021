@@ -10,7 +10,7 @@ import {
     Tooltip
 } from "@material-ui/core";
 import { Link, OpenInNew, Reply } from "@material-ui/icons";
-import styles from '../../styles/ImageCard.module.css';
+import styles from '../../../styles/ImageCard.module.css';
 
 function ImageCard({ title, caption, img }) {
 

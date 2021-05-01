@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from "@material-ui/core";
 import Image from "next/image";
-import styles from '../../styles/EmptyImageList.module.css';
+import styles from '../../../styles/EmptyImageList.module.css';
 
 function EmptyImageList({ search = false }) {
     const src = search ? "/empty_page.png" : "/empty_page2.png";
