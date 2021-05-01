@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from functions.predictions import generate_caption
-from models.models import get_encoder, get_decoder
+from models.models import get_encoder, get_decoder, get_image_extraction_model, get_caption_tokenizer
 
 UPLOAD_FOLDER = 'app/assets'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif'}
@@ -61,14 +61,16 @@ def caption():
         result = generate_caption(
             encoder=encoder,
             decoder=decoder,
-            image=image
+            image=image,
+            image_features_extraction=image_features_extract_model,
+            tokenizer=tokenizer
         )
         generated_caption = " ".join(result[:-1])
         return jsonify({"generated_caption": generated_caption})
 
 
 if __name__ == '__main__':
-    global decoder, encoder
+    global decoder, encoder, image_features_extract_model, tokenizer
     decoder = get_decoder(
         embedding_dim=embedding_dim,
         units=units,
@@ -79,4 +81,6 @@ if __name__ == '__main__':
         embedding_dim=embedding_dim,
         path='models/image_captions/encoder/encoder'
     )
+    image_features_extract_model = get_image_extraction_model()
+    tokenizer = get_caption_tokenizer()
     app.run(port=5000, debug=True, host='0.0.0.0')

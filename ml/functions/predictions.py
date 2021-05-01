@@ -1,5 +1,4 @@
 import tensorflow as tf
-import pickle
 import requests
 
 
@@ -17,22 +16,13 @@ def load_image(image):
     return img
 
 
-def generate_caption(encoder, decoder, image):
-    image_model = tf.keras.applications.InceptionV3(include_top=False, weights='imagenet')
-    new_input = image_model.input
-    hidden_layer = image_model.layers[-1].output
-
-    image_features_extract_model = tf.keras.Model(new_input, hidden_layer)
-
-    with open('../app/tokenizer.pickle', 'rb') as handle:
-        tokenizer = pickle.load(handle)
-
+def generate_caption(encoder, decoder, image, image_features_extraction, tokenizer):
     max_length = 50
 
     hidden = decoder.reset_state(batch_size=1)
 
     temp_input = tf.expand_dims(load_image(image), 0)
-    img_tensor_val = image_features_extract_model(temp_input)
+    img_tensor_val = image_features_extraction(temp_input)
     img_tensor_val = tf.reshape(img_tensor_val, (img_tensor_val.shape[0], -1, img_tensor_val.shape[3]))
 
     features = encoder(img_tensor_val)
