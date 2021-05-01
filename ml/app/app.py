@@ -70,7 +70,7 @@ def caption():
 
 
 if __name__ == '__main__':
-    global decoder, encoder, image_features_extract_model, tokenizer
+    # decoder = None, encoder, image_features_extract_model, tokenizer
     decoder = get_decoder(
         embedding_dim=embedding_dim,
         units=units,
