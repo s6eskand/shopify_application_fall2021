@@ -6,11 +6,11 @@ function AlertSnackbar({ severity, message, open, title }) {
     return (
         <Snackbar
             open={open}
-            autoHideDuration={title.length > 0 ? 5000 : 3000}
+            autoHideDuration={title === "" ? 5000 : 3000}
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
             <Alert severity={severity}>
-                { title.length > 0 && <AlertTitle>{title}</AlertTitle> }
+                { title === "" && <AlertTitle>{title}</AlertTitle> }
                 {message}
             </Alert>
         </Snackbar>
