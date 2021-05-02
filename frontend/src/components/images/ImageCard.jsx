@@ -18,23 +18,30 @@ function ImageCard({ title, caption, img }) {
         await navigator.clipboard.writeText(img);
     }
 
+    const trimCaption = () => {
+        if (caption.length > 99) {
+            return caption.substring(0, 99) + "...";
+        }
+        return caption;
+    }
+
     return (
         <Card className={styles.root}>
             <CardHeader
+                className={styles.title}
                 title={title}
             />
             <CardMedia
                 className={styles.media}
                 image={img}
                 title={caption}
-                // image="https://static.scientificamerican.com/sciam/cache/file/7A715AD8-449D-4B5A-ABA2C5D92D9B5A21_source.png"
             />
-            <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                    {caption}
+            <CardContent className={styles.content}>
+                <Typography variant="body2" color="textSecondary" component="p" className={styles.caption}>
+                    {trimCaption()}
                 </Typography>
             </CardContent>
-            <CardActions disableSpacing>
+            <CardActions disableSpacing className={styles.actions}>
                 <Tooltip title="Open in new window" arrow>
                     <IconButton>
                         <OpenInNew />

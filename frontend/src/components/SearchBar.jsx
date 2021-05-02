@@ -11,11 +11,11 @@ const LargeTextTooltip = withStyles({
 })(Tooltip)
 
 function SearchBar() {
-    const { search, setSearch } = useContext(ImageContext);
+    const { search, handleSearch } = useContext(ImageContext);
 
     const handleChange = (event) => {
-        event.preventDefault();
-        setSearch(event.target.value);
+        const val = event.target.value;
+        handleSearch(val);
     }
 
     return (

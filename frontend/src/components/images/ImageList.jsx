@@ -1,18 +1,21 @@
-import React, { useContext, useEffect } from "react";
-import ImageProvider, { ImageContext } from "../../providers/ImageProvider";
+import React, { useContext, useEffect, useState } from "react";
+import { ImageContext } from "../../providers/ImageProvider";
 import ImageCard from "./ImageCard";
 import styles from '../../../styles/ImageList.module.css';
 import { Divider, Typography } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 
-function ImageListContent() {
-    const { filteredImages, loadingImages, search, listImages } = useContext(ImageContext);
+function ImageList() {
+    const { imageList, search } = useContext(ImageContext);
+    const [filteredImages, setFilteredImages] = useState([]);
 
     useEffect(() => {
-        (async () => {
-            await listImages()
-        })()
-    }, [])
+        setFilteredImages([
+            ...imageList.filter(image =>
+                image.title.includes(search) || image.caption.includes(search)
+            )
+        ])
+    }, [search])
 
     return (
         <div className={styles.container}>
@@ -22,8 +25,8 @@ function ImageListContent() {
             <Divider className={styles.divider} />
             { filteredImages.length > 0 ?
                 <div className={styles.imagelist}>
-                    {filteredImages.map(image => (
-                        <div className={styles.image}>
+                    {filteredImages.map((image, idx) => (
+                        <div className={styles.image} key={idx}>
                             <ImageCard
                                 title={image.title}
                                 caption={image.caption}
@@ -39,11 +42,4 @@ function ImageListContent() {
     )
 }
 
-const ImageList = () => {
-    return (
-        <ImageProvider>
-            <ImageListContent />
-        </ImageProvider>
-    )
-}
 export default ImageList;

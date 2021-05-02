@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { listImagesRequest, createImageRequest } from "../api/imagecrud";
 import { generateCaptionRequest } from "../api/predictionrequests";
 import { AlertContext } from "./AlertProvider";
 
 export const ImageContext = createContext({
-    filteredImages: [],
+    imageList: [],
     search: "",
-    setSearch: () => { },
+    handleSearch: () => { },
     aboutDialog: false,
     isLoading: false,
     imagesLoading: false,
@@ -21,7 +21,7 @@ export const ImageContext = createContext({
 
 const ImageProvider = ({ children }) => {
     const { openAlertSnackbar } = useContext(AlertContext)
-    const [filteredImages, setFilteredImages] = useState([]);
+    const [imageList, setImageList] = useState([]);
     const [search, setSearch] = useState("");
     const [imagesLoading, setImagesLoading] = useState(false);
     const [captionLoading, setCaptionLoading] = useState(false);
@@ -29,21 +29,17 @@ const ImageProvider = ({ children }) => {
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
-        if (filteredImages.length > 0) {
-            setFilteredImages([
-                ...filteredImages.filter(image =>
-                    image.title.includes(search) || image.caption.includes(search)
-                )
-            ])
-        }
-    }, [search])
+        (async () => {
+            await listImages()
+        })()
+    }, [])
 
     const listImages = async () => {
         setImagesLoading(true);
         try {
             const response = await listImagesRequest();
-            const imageList = await response.data;
-            setFilteredImages([...imageList])
+            const images = await response.data;
+            setImageList([...images])
             setImagesLoading(false);
         } catch {
             openAlertSnackbar(
@@ -100,12 +96,16 @@ const ImageProvider = ({ children }) => {
         }
     }
 
+    const handleSearch = (newVal) => {
+        setSearch(newVal);
+    }
+
     return (
         <ImageContext.Provider
             value={{
-                filteredImages,
+                imageList,
                 search,
-                setSearch,
+                handleSearch,
                 imagesLoading,
                 generateCaption,
                 captionLoading,

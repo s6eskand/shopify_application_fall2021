@@ -7,7 +7,7 @@ import ImageProvider, { ImageContext } from "../providers/ImageProvider";
 import AlertProvider from "../providers/AlertProvider";
 import CreateImageDialog from "./images/CreateImageDialog";
 
-function HeaderContent() {
+function Header() {
     const { openDialog, setOpenDialog } = useContext(ImageContext);
 
     const handleOpen = () => setOpenDialog(true);
@@ -29,15 +29,5 @@ function HeaderContent() {
         </>
     )
 }
-
-const Header = () => {
-    return (
-        <AlertProvider>
-            <ImageProvider>
-                <HeaderContent />
-            </ImageProvider>
-        </AlertProvider>
-    )
-};
 
 export default Header;

@@ -68,8 +68,8 @@ function CreateImageDialog({ open, handleClose }) {
                 "A new image has been added to the repository",
                 "Successfully created image"
             );
-            await listImages();
             handleCancel();
+            window.location.reload();
         }
     }
 
