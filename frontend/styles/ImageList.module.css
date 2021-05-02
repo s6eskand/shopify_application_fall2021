@@ -31,9 +31,18 @@
     text-align: center;
   }
 
+  .divider {
+    width: 313px;
+    margin: 0 auto !important;
+  }
+
   .imagelist {
     justify-content: center;
     align-items: center;
+  }
+
+  .image {
+    padding-right: 0;
   }
 }
 
