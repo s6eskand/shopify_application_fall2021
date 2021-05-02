@@ -2,8 +2,10 @@ import Head from 'next/head'
 import Navbar from "../src/components/Navbar";
 import Header from "../src/components/Header";
 import ImageList from "../src/components/images/ImageList";
+import AlertProvider from "../src/providers/AlertProvider";
+import ImageProvider from "../src/providers/ImageProvider";
 
-function Home() {
+function HomeContent() {
     return (
         <>
             <Navbar />
@@ -16,6 +18,16 @@ function Home() {
             <Header />
             <ImageList />
         </>
+    )
+}
+
+const Home = () => {
+    return (
+        <AlertProvider>
+            <ImageProvider>
+                <HomeContent />
+            </ImageProvider>
+        </AlertProvider>
     )
 }
 
