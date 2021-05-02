@@ -10,5 +10,5 @@ class Image(models.Model):
         ppoi_field='image_ppoi'
     )
     caption = models.TextField(max_length=100)
-    title = models.CharField(max_length=100, default="Untitled")
+    title = models.CharField(max_length=100, default="Untitled", unique=True)
     image_ppoi = PPOIField()

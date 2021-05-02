@@ -1,31 +1,27 @@
-import Head from 'next/head'
-import Navbar from "../src/components/Navbar";
-import Header from "../src/components/Header";
-import ImageList from "../src/components/images/ImageList";
+import React from 'react';
 import AlertProvider from "../src/providers/AlertProvider";
-import ImageProvider from "../src/providers/ImageProvider";
+import ImageProvider, { ImageContext } from "../src/providers/ImageProvider";
+import { listImagesRequest } from "../src/api/imagecrud";;
+import Main from "../src/components/Main";
 
-function HomeContent() {
-    return (
-        <>
-            <Navbar />
-            <Head>
-                <title>Sam Eskandar Image Repository</title>
-                <meta name="description"
-                      content="An image repository built by Sam Eskandar for the Shopify Fall 2021 Dev Challenge"/>
-                <link rel="icon" href="/favicon.ico"/>
-            </Head>
-            <Header />
-            <ImageList />
-        </>
-    )
+export async function getServerSideProps(context) {
+    const response = await listImagesRequest();
+    const images = await response.data;
+    console.log(images);
+
+    return {
+        props: {
+            images
+        }
+    }
 }
 
-const Home = () => {
+const Home = ({ images }) => {
+
     return (
         <AlertProvider>
             <ImageProvider>
-                <HomeContent />
+                <Main images={images} />
             </ImageProvider>
         </AlertProvider>
     )

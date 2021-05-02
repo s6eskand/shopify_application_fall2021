@@ -9,9 +9,7 @@ export const listImagesRequest = () => {
         BASE_URL + ENDPOINTS.IMAGES
     )
         .then(res => res)
-        .catch(err => {
-            throw new Error(err)
-        })
+        .catch(err => err)
 }
 
 export const createImageRequest = (data) => {
@@ -28,4 +26,12 @@ export const createImageRequest = (data) => {
         .catch(err => {
             throw new Error(err)
         })
+}
+
+export const retrieveImageByTitle = (title) => {
+    return axios.get(
+        BASE_URL + ENDPOINTS.IMAGES + "/" + title
+    )
+        .then(res => res)
+        .catch(err => err)
 }

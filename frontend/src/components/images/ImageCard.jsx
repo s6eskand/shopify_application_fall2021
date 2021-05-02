@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from "next/link";
 import {
     Card,
     CardHeader,
@@ -9,7 +10,7 @@ import {
     IconButton,
     Tooltip
 } from "@material-ui/core";
-import { Link, OpenInNew, Reply } from "@material-ui/icons";
+import { Link as LinkIcon, OpenInNew, Reply } from "@material-ui/icons";
 import styles from '../../../styles/ImageCard.module.css';
 
 function ImageCard({ title, caption, img }) {
@@ -42,10 +43,12 @@ function ImageCard({ title, caption, img }) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing className={styles.actions}>
-                <Tooltip title="Open in new window" arrow>
-                    <IconButton>
-                        <OpenInNew />
-                    </IconButton>
+                <Tooltip title="View full image" arrow>
+                    <Link href={`/images/${title}`}>
+                        <IconButton>
+                            <OpenInNew />
+                        </IconButton>
+                    </Link>
                 </Tooltip>
                 <Tooltip title="Share image" arrow>
                     <IconButton>
@@ -54,7 +57,7 @@ function ImageCard({ title, caption, img }) {
                 </Tooltip>
                 <Tooltip title="Copy image URL" arrow>
                     <IconButton onClick={handleCopy}>
-                        <Link />
+                        <LinkIcon />
                     </IconButton>
                 </Tooltip>
             </CardActions>

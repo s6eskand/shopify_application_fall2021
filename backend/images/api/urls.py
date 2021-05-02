@@ -15,5 +15,5 @@ image_detail = ImageView.as_view({
 
 urlpatterns = [
     path('', image_list_create),
-    path('/<pk>', image_detail)
+    path('/<title>', image_detail)
 ]

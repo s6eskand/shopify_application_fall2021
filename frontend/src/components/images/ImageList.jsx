@@ -2,12 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { ImageContext } from "../../providers/ImageProvider";
 import ImageCard from "./ImageCard";
 import styles from '../../../styles/ImageList.module.css';
-import { Divider, Typography } from "@material-ui/core";
+import { Divider, Typography, LinearProgress } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 
-function ImageList() {
-    const { imageList, search } = useContext(ImageContext);
+function ImageList({ images }) {
+    const { imageList, search, imagesLoading } = useContext(ImageContext);
     const [filteredImages, setFilteredImages] = useState([]);
+
+    useEffect(() => {
+        setFilteredImages([...images])
+    }, [imageList])
 
     useEffect(() => {
         setFilteredImages([
@@ -23,7 +27,8 @@ function ImageList() {
                 Images
             </Typography>
             <Divider className={styles.divider} />
-            { filteredImages.length > 0 ?
+            {imagesLoading && <LinearProgress />}
+            { filteredImages.length > 0 || imagesLoading ?
                 <div className={styles.imagelist}>
                     {filteredImages.map((image, idx) => (
                         <div className={styles.image} key={idx}>

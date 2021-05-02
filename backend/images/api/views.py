@@ -8,3 +8,4 @@ from ..models import Image
 class ImageView(viewsets.ModelViewSet):
     serializer_class = ImageSerializer
     queryset = Image.objects.all()
+    lookup_field = "title"

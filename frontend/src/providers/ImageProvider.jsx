@@ -5,6 +5,7 @@ import { AlertContext } from "./AlertProvider";
 
 export const ImageContext = createContext({
     imageList: [],
+    setImageList: () => { },
     search: "",
     handleSearch: () => { },
     aboutDialog: false,
@@ -36,12 +37,12 @@ const ImageProvider = ({ children }) => {
 
     const listImages = async () => {
         setImagesLoading(true);
-        try {
-            const response = await listImagesRequest();
+        const response = await listImagesRequest();
+        if (response.status === 200) {
             const images = await response.data;
             setImageList([...images])
             setImagesLoading(false);
-        } catch {
+        } else {
             openAlertSnackbar(
                 "error",
                 5000,
@@ -104,6 +105,7 @@ const ImageProvider = ({ children }) => {
         <ImageContext.Provider
             value={{
                 imageList,
+                setImageList,
                 search,
                 handleSearch,
                 imagesLoading,
