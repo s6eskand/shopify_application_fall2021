@@ -42,20 +42,10 @@ def apply_caching(response):
     return response
 
 
-@app.route('/test', methods=['GET'])
-def test():
-    return jsonify({"test": True})
-
-
 @app.route('/caption', methods=['POST'])
 def caption():
     if request.method == 'POST':
-        image = None
-        file = None
-        if 'file' not in request.files:
-            image = request.get_json()['image']
-        else:
-            file = request.files['file']
+        file = request.files['file']
         if file and allowed_file(file.filename):
             image = file.read()
         result = generate_caption(
@@ -70,7 +60,6 @@ def caption():
 
 
 if __name__ == '__main__':
-    # decoder = None, encoder, image_features_extract_model, tokenizer
     decoder = get_decoder(
         embedding_dim=embedding_dim,
         units=units,

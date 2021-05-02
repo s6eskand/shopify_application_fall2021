@@ -19,10 +19,9 @@ function CreateImageDialog({ open, handleClose }) {
     const [state, setState] = useState({
         title: "",
         caption: "",
-        image: "",
-        imageUrl: "",
-        captionError: false,
+        image: ""
     })
+    const [imageFile, setImageFile] = useState(null);
     const fullscreen = useMediaQuery("(max-width:760px)");
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
     const { generateCaption, captionLoading, createImageLoading, createImage, listImages } = useContext(ImageContext);
@@ -39,61 +38,51 @@ function CreateImageDialog({ open, handleClose }) {
             title: "",
             caption: "",
             image: "",
-            imageUrl: "",
-            captionError: false,
         })
+        setImageFile(null)
         handleClose();
     }
 
     const handleGenerateCaption = async () => {
-        const caption = await generateCaption(state.imageUrl);
+        const formData = new FormData();
+        formData.append("file", imageFile)
+        const caption = await generateCaption(formData);
         if (caption) {
             setState({
                 ...state,
                 caption
             })
-        } else {
-            setState({
-                ...state,
-                captionError: true
-            })
         }
     }
 
-    const convertBlobToFile = () => {
-        const contentType = state.image.mimeType.split("/")[1]
-        const filename = state.title + "." + contentType;
-        return new File([state.image], filename, contentType);
-    }
-
     const handleCreate = async () => {
-        const data = new FormData();
-        data.append("image", convertBlobToFile());
-        data.append("title", state.title);
-        data.append("caption", state.caption);
-        const created = createImage(data);
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        formData.append("title", state.title);
+        formData.append("caption", state.caption);
+        const created = await createImage(formData);
         if (created) {
-            listImages();
-            handleCancel();
             openAlertSnackbar(
                 "success",
                 6000,
                 "A new image has been added to the repository",
                 "Successfully created image"
             );
+            await listImages();
+            handleCancel();
         }
     }
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
+        setImageFile(file);
         if (file) {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file);
             fileReader.onload = (event) => {
                 setState({
                     ...state,
-                    image: event.target.result,
-                    captionError: false
+                    image: event.target.result
                 })
             }
             fileReader.onerror = (event) => {
@@ -101,33 +90,6 @@ function CreateImageDialog({ open, handleClose }) {
                     "error",
                     3000,
                     "Error reading file contents"
-                )
-            }
-        }
-    }
-
-    const isValidURL = (url) => {
-        const res = url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-        return res !== null
-    }
-
-    const handleImageURLChange = () => {
-        if (state.imageUrl !== "") {
-            if (isValidURL(state.imageUrl)) {
-                setState({
-                    ...state,
-                    image: state.imageUrl,
-                    captionError: false
-                })
-            } else {
-                setState({
-                    ...state,
-                    captionError: true
-                })
-                openAlertSnackbar(
-                    "error",
-                    3000,
-                    "Not a valid image URL!"
                 )
             }
         }
@@ -153,7 +115,7 @@ function CreateImageDialog({ open, handleClose }) {
                         label="Title"
                         onChange={handleChange}
                     />
-                    <div className={styles.row}>
+                    <div className={styles.rowCol}>
                         <label className={styles.filelabel}>
                             Select File
                             <input
@@ -163,17 +125,6 @@ function CreateImageDialog({ open, handleClose }) {
                                 onChange={handleFileChange}
                             />
                         </label>
-                        <TextField
-                            fullWidth
-                            className={styles.imageinput}
-                            margin="dense"
-                            value={state.imageUrl}
-                            placeholder="Image URL"
-                            label="Image URL"
-                            name="imageUrl"
-                            onChange={handleChange}
-                            onBlur={handleImageURLChange}
-                        />
                     </div>
                     {state.image !== "" ?
                         <div className={styles.displayImage}>
@@ -198,7 +149,7 @@ function CreateImageDialog({ open, handleClose }) {
                             <Button
                                 variant="outlined"
                                 color="primary"
-                                disabled={(!state.imageUrl && state.image === "") || captionLoading || state.captionError}
+                                disabled={state.image === "" || captionLoading || state.caption !== ""}
                                 style={{ marginRight: 10 }}
                                 onClick={handleGenerateCaption}
                             >

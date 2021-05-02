@@ -14,7 +14,7 @@
     border-radius: 4px;
     margin: 20px 0;
     display: flex;
-    width: 130px;
+    width: 110px;
     flex-direction: column;
     justify-content: center;
     padding: 6px 16px;
@@ -28,10 +28,6 @@
 
 .fileselect {
     display: none;
-}
-
-.imageinput {
-    margin-left: 10px !important;
 }
 
 .buttonWrapper {

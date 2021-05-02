@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { listImagesRequest, createImageRequest } from "../api/imagecrud";
-import { generateCaptionRequest_URL } from "../api/predictionrequests";
-import AlertProvider, { AlertContext } from "./AlertProvider";
+import { generateCaptionRequest } from "../api/predictionrequests";
+import { AlertContext } from "./AlertProvider";
 
 export const ImageContext = createContext({
     filteredImages: [],
@@ -40,27 +40,26 @@ const ImageProvider = ({ children }) => {
 
     const listImages = async () => {
         setImagesLoading(true);
-            try {
-                const response = await listImagesRequest();
-                const imageList = await response.data;
-                setFilteredImages([...imageList])
-                setImagesLoading(false);
-            } catch {
-                openAlertSnackbar(
-                    "error",
-                    5000,
-                    "Oops! Something went wrong. Please try again.",
-                    "Something went wrong..."
-                )
-                setImagesLoading(false);
-            }
+        try {
+            const response = await listImagesRequest();
+            const imageList = await response.data;
+            setFilteredImages([...imageList])
+            setImagesLoading(false);
+        } catch {
+            openAlertSnackbar(
+                "error",
+                5000,
+                "Oops! Something went wrong. Please try again.",
+                "Something went wrong..."
+            )
+            setImagesLoading(false);
+        }
     }
 
-    const generateCaption = async (imageUrl) => {
+    const generateCaption = async (data) => {
         setCaptionLoading(true);
         try {
-            const data = { image: imageUrl }
-            const response = await generateCaptionRequest_URL(data);
+            const response = await generateCaptionRequest(data);
             if (response.status === 400) {
                 openAlertSnackbar(
                     "error",
