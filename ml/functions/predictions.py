@@ -1,5 +1,7 @@
 import tensorflow as tf
 import requests
+import json
+from heapq import heapify, heappop, heappush
 
 
 def calc_max_length(tensor):
@@ -14,6 +16,25 @@ def load_image(image):
     img = tf.image.resize(img, (299, 299))
     img = tf.keras.applications.inception_v3.preprocess_input(img)
     return img
+
+
+def tokenize_caption(caption):
+    freq = {}
+    for word in caption:
+        if word != "<unk>":
+            if word in freq:
+                freq[word] += 1
+            else:
+                freq[word] = 1
+    return freq
+
+
+def compare_captions(caption1, caption2):
+    count = 0
+    for key in caption1:
+        if key in caption2:
+            count += caption2[key]
+    return count
 
 
 def generate_caption(encoder, decoder, image, image_features_extraction, tokenizer):
@@ -42,3 +63,25 @@ def generate_caption(encoder, decoder, image, image_features_extraction, tokeniz
         dec_input = tf.expand_dims([predicted_id], 0)
 
     return result
+
+
+def search_images(encoder, decoder, image, image_features_extraction, tokenizer, images):
+    caption = generate_caption(encoder, decoder, image, image_features_extraction, tokenizer)
+    # response = requests.get("http://localhost:8000/images")
+    # response_dict = json.loads(response.content)
+    subject = tokenize_caption(caption[:-1])
+    heap = []
+    heapify(heap)
+    images_json = json.loads(images)
+    for img in images_json:
+        compare = tokenize_caption(img["caption"].split())
+        score = compare_captions(subject, compare)
+        heappush(heap, (score * -1, img["pk"]))
+
+    similar_images = []
+    i = 0
+    while i < 5:
+        similar_images.append(heappop(heap)[1])
+        i += 1
+
+    return similar_images

@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
-from functions.predictions import generate_caption
+from flask_cors import CORS
+from functions.predictions import generate_caption, search_images
 from models.models import get_encoder, get_decoder, get_image_extraction_model, get_caption_tokenizer
+import json
 
 UPLOAD_FOLDER = 'app/assets'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif'}
@@ -57,6 +58,25 @@ def caption():
         )
         generated_caption = " ".join(result[:-1])
         return jsonify({"generated_caption": generated_caption})
+
+
+@app.route('/search', methods=['POST'])
+def search():
+    if request.method == 'POST':
+        image = None
+        file = request.files['file']
+        images = request.form.get("images")
+        if file and allowed_file(file.filename):
+            image = file.read()
+        similar_images = search_images(
+            encoder=encoder,
+            decoder=decoder,
+            image=image,
+            image_features_extraction=image_features_extract_model,
+            tokenizer=tokenizer,
+            images=images
+        )
+        return jsonify({"similar_images": similar_images})
 
 
 if __name__ == '__main__':
