@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
     Dialog,
     DialogActions,
@@ -24,7 +24,7 @@ function CreateImageDialog({ open, handleClose }) {
     const [imageFile, setImageFile] = useState(null);
     const fullscreen = useMediaQuery("(max-width:760px)");
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
-    const { generateCaption, captionLoading, createImageLoading, createImage, listImages } = useContext(ImageContext);
+    const { generateCaption, captionLoading, createImageLoading, createImage } = useContext(ImageContext);
 
     const handleChange = (event) => {
         setState({

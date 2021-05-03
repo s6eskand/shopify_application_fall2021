@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import Navbar from "./Navbar";
 import Head from "next/head";
 import Header from "./Header";
