@@ -7,7 +7,6 @@ import Main from "../src/components/Main";
 export async function getServerSideProps(context) {
     const response = await listImagesRequest();
     const images = await response.data;
-    console.log(images);
 
     return {
         props: {
