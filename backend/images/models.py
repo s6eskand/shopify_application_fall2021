@@ -1,8 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 from versatileimagefield.fields import VersatileImageField, PPOIField
 
 
-# Model storing Image content (either file or url)
+# Model storing Image content
 class Image(models.Model):
     image = VersatileImageField(
         'Image',
@@ -10,5 +11,14 @@ class Image(models.Model):
         ppoi_field='image_ppoi'
     )
     caption = models.TextField(max_length=100)
-    title = models.CharField(max_length=100, default="Untitled", unique=True)
+    title = models.CharField(max_length=100, default="Untitled")
+    likes = models.IntegerField(default=0)
+    saves = models.IntegerField(default=0)
+    shares = models.IntegerField(default=0)
     image_ppoi = PPOIField()
+    owner = models.ForeignKey(
+        User,
+        related_name='images',
+        on_delete=models.CASCADE,
+        null=True
+    )

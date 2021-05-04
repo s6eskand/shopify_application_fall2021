@@ -1,19 +1,18 @@
 from django.urls import path
 from .views import (
-    ImageView
+    ImageListView,
+    ImageRetrieveView,
+    ImageCreateUpdateView
 )
 
-image_list_create = ImageView.as_view({
-    "get": "list",
-    "post": "create"
-})
-
-image_detail = ImageView.as_view({
-    "get": "retrieve"
+image_create = ImageCreateUpdateView.as_view({
+    "post": "create",
+    "put": "update"
 })
 
 
 urlpatterns = [
-    path('', image_list_create),
-    path('/<title>', image_detail)
+    path('', ImageListView.as_view()),
+    path('/images/<username>', ImageRetrieveView.as_view()),
+    path('/create', image_create)
 ]
