@@ -1,8 +1,10 @@
 import React from 'react';
 import AlertProvider from "../src/providers/AlertProvider";
-import ImageProvider, { ImageContext } from "../src/providers/ImageProvider";
-import { listImagesRequest } from "../src/api/imagecrud";;
+import ImageProvider from "../src/providers/ImageProvider";
+import { listImagesRequest } from "../src/api/imagecrud";
 import Main from "../src/components/Main";
+import AuthProvider from "../src/providers/AuthProvider";
+import AuthGate from "../src/components/auth/AuthGate";
 
 export async function getServerSideProps(context) {
     const response = await listImagesRequest();
@@ -18,11 +20,15 @@ export async function getServerSideProps(context) {
 const Home = ({ images }) => {
 
     return (
-        <AlertProvider>
-            <ImageProvider>
-                <Main images={images} />
-            </ImageProvider>
-        </AlertProvider>
+        <AuthProvider>
+            <AlertProvider>
+                <ImageProvider>
+                    <AuthGate>
+                        <Main images={images} />
+                    </AuthGate>
+                </ImageProvider>
+            </AlertProvider>
+        </AuthProvider>
     )
 }
 

@@ -3,5 +3,10 @@ export const BASE_URL = "http://localhost:8000";
 
 export const ENDPOINTS = {
     CAPTION: "/caption",
-    IMAGES: "/images"
+    IMAGES: "/images",
+    AUTH: {
+        LOGIN: "/auth/login",
+        REGISTER: "/auth/register",
+        LOGOUT: "/auth/logout"
+    }
 }
