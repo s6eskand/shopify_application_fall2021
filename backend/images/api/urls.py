@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     ImageListView,
-    ImageRetrieveView,
+    ImageNonOwnerUpdateView,
     ImageCreateUpdateView
 )
 
@@ -13,6 +13,6 @@ image_create = ImageCreateUpdateView.as_view({
 
 urlpatterns = [
     path('', ImageListView.as_view()),
-    path('/images/<username>', ImageRetrieveView.as_view()),
-    path('/create', image_create)
+    path('images', ImageNonOwnerUpdateView.as_view()),
+    path('create', image_create)
 ]
