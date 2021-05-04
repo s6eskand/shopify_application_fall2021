@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'images',
+    'accounts',
+    'usersettings',
+    'knox',
     'corsheaders',
     'versatileimagefield',
 ]
@@ -118,11 +121,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# No authentication specified for this project as it is not needed
+# Modify REST API authentication to use django-rest-knox package token auth
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-         'rest_framework.permissions.AllowAny',
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'knox.auth.TokenAuthentication',
+    )
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
