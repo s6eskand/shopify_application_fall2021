@@ -1,0 +1,51 @@
+
+.root {
+    display: flex;
+    height: 100vh;
+}
+
+.imagebanner {
+    width: 50%;
+}
+
+.inputMain {
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    flex-direction: column;
+}
+
+.authactions {
+    display: flex;
+    margin-top: 20px;
+}
+
+.buttonwrapper {
+    margin: 8px;
+    position: relative;
+}
+
+.buttonProgress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+}
+
+.changeaction {
+    padding: 0;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.changeaction:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+    .imagebanner {
+        display: none;
+    }
+}

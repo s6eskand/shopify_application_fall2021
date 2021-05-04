@@ -30,6 +30,16 @@
     display: block;
 }
 
+.actiontextcontainer {
+    display: flex;
+    align-items: center;
+}
+
+.actiontext {
+    padding: 0;
+    font-size: 12px;
+}
+
 .actions {
     padding-top: 0 !important;
 }
