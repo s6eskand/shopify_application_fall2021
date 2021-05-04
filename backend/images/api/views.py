@@ -30,7 +30,7 @@ class ImageRetrieveView(views.APIView):
 class ImageCreateUpdateView(viewsets.ModelViewSet):
 
     permission_classes = [
-        permissions.IsAuthenticated
+        permissions.IsAuthenticated,
     ]
 
     serializer_class = ImageSerializer

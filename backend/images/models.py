@@ -13,8 +13,8 @@ class Image(models.Model):
     caption = models.TextField(max_length=100)
     title = models.CharField(max_length=100, default="Untitled")
     likes = models.IntegerField(default=0)
-    saves = models.IntegerField(default=0)
     shares = models.IntegerField(default=0)
+    private = models.BooleanField(default=False)
     image_ppoi = PPOIField()
     owner = models.ForeignKey(
         User,
