@@ -144,28 +144,17 @@ function CreateImageDialog({ open, handleClose }) {
                         name="caption"
                         onChange={handleChange}
                     />
-                    <div className={styles.row}>
-                        <div className={styles.buttonWrapper}>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                disabled={state.image === "" || captionLoading || state.caption !== ""}
-                                style={{ marginRight: 10 }}
-                                onClick={handleGenerateCaption}
-                            >
-                                Generate Caption
-                            </Button>
-                            {captionLoading && <CircularProgress size={24} className={styles.buttonProgress} />}
-                        </div>
-                        <div className={styles.buttonWrapper}>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                disabled={!state.caption}
-                            >
-                                Generate Image
-                            </Button>
-                        </div>
+                    <div className={styles.buttonWrapper}>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            disabled={state.image === "" || captionLoading || state.caption !== ""}
+                            style={{ marginRight: 10 }}
+                            onClick={handleGenerateCaption}
+                        >
+                            Generate Caption
+                        </Button>
+                        {captionLoading && <CircularProgress size={24} className={styles.buttonProgress} />}
                     </div>
                 </div>
             </DialogContent>

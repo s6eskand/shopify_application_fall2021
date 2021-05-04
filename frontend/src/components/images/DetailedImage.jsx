@@ -8,7 +8,7 @@ function DetailedImage({ image, width, height }) {
             <Typography variant="h3">
                 {image.title}
             </Typography>
-            <Typography variant="h6" component="p">
+            <Typography variant="h6" component="p" className={styles.middle}>
                 {image.caption}
             </Typography>
             <img

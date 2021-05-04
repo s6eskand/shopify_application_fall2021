@@ -24,6 +24,34 @@
     color: #f9f9f9 !important;
 }
 
+.upload {
+    padding-top: 25px;
+}
+
+.uploadLabel {
+    border: 1px solid #0450d5;
+    color: #0450D5;
+    border-radius: 4px;
+    margin: 20px 0;
+    display: flex;
+    width: auto;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px 16px;
+    transition: background-color 0.25s ease;
+    cursor: pointer;
+}
+
+.uploadLabel:hover {
+    background-color: rgba(4, 80, 213, 0.1);
+}
+
+.displayImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media screen and (max-width: 500px) {
     .content {
         flex-direction: column;

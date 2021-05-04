@@ -11,11 +11,15 @@ const LargeTextTooltip = withStyles({
 })(Tooltip)
 
 function SearchBar() {
-    const { search, handleSearch } = useContext(ImageContext);
+    const { search, handleSearch, setShowImageSearch } = useContext(ImageContext);
 
     const handleChange = (event) => {
         const val = event.target.value;
         handleSearch(val);
+    }
+
+    const handleImageSearch = () => {
+        setShowImageSearch(prevState => !prevState)
     }
 
     return (
@@ -31,10 +35,10 @@ function SearchBar() {
             />
             <Divider orientation="vertical" className={styles.divider} />
             <LargeTextTooltip
-                title="Search images through an uploaded image. File upload and remote URL supported"
+                title="Search images through an uploaded image"
                 arrow
             >
-                <IconButton className={styles.iconButton}>
+                <IconButton className={styles.iconButton} onClick={handleImageSearch}>
                     <ImageSearch />
                 </IconButton>
             </LargeTextTooltip>

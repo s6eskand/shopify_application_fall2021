@@ -17,7 +17,8 @@ export const ImageContext = createContext({
     openDialog: false,
     setOpenDialog: () => { },
     createImage: () => { },
-    listImages: () => { },
+    showImageSearch: false,
+    setShowImageSearch: () => { }
 })
 
 const ImageProvider = ({ children }) => {
@@ -28,6 +29,7 @@ const ImageProvider = ({ children }) => {
     const [captionLoading, setCaptionLoading] = useState(false);
     const [createImageLoading, setCreateImageLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+    const [showImageSearch, setShowImageSearch] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -115,7 +117,8 @@ const ImageProvider = ({ children }) => {
                 openDialog,
                 setOpenDialog,
                 createImage,
-                listImages
+                showImageSearch,
+                setShowImageSearch,
             }}
         >
             {children}
