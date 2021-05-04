@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import Link from "next/link";
 import {
     Card,
     CardHeader,
@@ -8,16 +7,16 @@ import {
     CardActions,
     Typography,
     IconButton,
-    Tooltip
+    Tooltip, Avatar
 } from "@material-ui/core";
-import { Link as LinkIcon, OpenInNew, Reply } from "@material-ui/icons";
+import { Link as LinkIcon, FavoriteBorder, Favorite, Reply } from "@material-ui/icons";
 import styles from '../../../styles/ImageCard.module.css';
 import { AlertContext } from "../../providers/AlertProvider";
 import AlertSnackbar from "../globals/AlertSnackbar";
 
 const REACT_APP_URL = "http://localhost:3000/images/"
 
-function ImageCard({ title, caption, img }) {
+function ImageCard({ title, caption, img, likes, shares }) {
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
 
     const handleCopy = async () => {
@@ -46,12 +45,23 @@ function ImageCard({ title, caption, img }) {
         return caption;
     }
 
+    const formatNumber = (num) => {
+        if (num >= 1000 && num < 1000000) {
+            return Math.round(num / 100) / 10 + "k"
+        } else if (num >= 1000000) {
+            const x = num / 1000000
+            return Math.round(x * 10) / 10 + "m"
+        }
+        return num
+    }
+
     return (
         <>
         <Card className={styles.root}>
             <CardHeader
                 className={styles.title}
                 title={title}
+                avatar={<Avatar>P</Avatar>}
             />
             <CardMedia
                 className={styles.media}
@@ -64,18 +74,20 @@ function ImageCard({ title, caption, img }) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing className={styles.actions}>
-                <Link href={`/images/${title}`}>
-                    <Tooltip title="View full image" arrow>
-                        <IconButton>
-                            <OpenInNew />
+                <div className={styles.actiontextcontainer}>
+                    <IconButton>
+                        <FavoriteBorder />
+                    </IconButton>
+                    <p className={styles.actiontext}>{` ${formatNumber(likes)} likes`}</p>
+                </div>
+                <div className={styles.actiontextcontainer}>
+                    <Tooltip title="Share image" arrow>
+                        <IconButton onClick={handleShare}>
+                            <Reply />
                         </IconButton>
                     </Tooltip>
-                </Link>
-                <Tooltip title="Share image" arrow>
-                    <IconButton onClick={handleShare}>
-                        <Reply />
-                    </IconButton>
-                </Tooltip>
+                    <p className={styles.actiontext}>{` ${formatNumber(shares)} shares`}</p>
+                </div>
                 <Tooltip title="Copy image URL" arrow>
                     <IconButton onClick={handleCopy}>
                         <LinkIcon />
