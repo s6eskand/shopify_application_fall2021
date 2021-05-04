@@ -9,4 +9,4 @@ class UserSetting(models.Model):
         on_delete=models.CASCADE
     )
     likes_visible = models.BooleanField(default=True)
-    private = models.BooleanField(default=True)
+    private = models.BooleanField(default=False)

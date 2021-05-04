@@ -14,7 +14,7 @@ class RegisterAPI(generics.GenericAPIView):
         user = serializer.save()
         serializer = UserSerializer(user, context=self.get_serializer_context()).data
 
-        usersetting = UserSetting(owner=serializer['pk'])
+        usersetting = UserSetting(owner=user)
         usersetting.save()
 
         return Response({
