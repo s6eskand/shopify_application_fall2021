@@ -38,6 +38,7 @@ function ImageList({ images }) {
                                 img={image.image.full_size}
                                 likes={image.likes}
                                 shares={image.shares}
+                                author={image.author}
                             />
                         </div>
                     ))}

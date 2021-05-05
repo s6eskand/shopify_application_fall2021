@@ -15,12 +15,13 @@ import { AlertContext } from "../../providers/AlertProvider";
 import AlertSnackbar from "../globals/AlertSnackbar";
 
 const REACT_APP_URL = "http://localhost:3000/images/"
+const IMAGE_SERVER_URL = "http://localhost:8000";
 
-function ImageCard({ title, caption, img, likes, shares }) {
+function ImageCard({ title, caption, img, likes, shares, author }) {
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
 
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(img);
+        await navigator.clipboard.writeText(IMAGE_SERVER_URL + img);
         openAlertSnackbar(
             "success",
             3000,
@@ -55,17 +56,32 @@ function ImageCard({ title, caption, img, likes, shares }) {
         return num
     }
 
+    const avatar = () => {
+        if (author.profile_picture !== null) {
+            return (
+                <Avatar alt={author.username} src={IMAGE_SERVER_URL + author.profile_picture} />
+            )
+        } else {
+            return (
+                <Avatar>
+                    U
+                    {/*{author?.username[0].toUpperCase()}*/}
+                </Avatar>
+            )
+        }
+    }
+
     return (
         <>
         <Card className={styles.root}>
             <CardHeader
                 className={styles.title}
                 title={title}
-                avatar={<Avatar>P</Avatar>}
+                avatar={avatar()}
             />
             <CardMedia
                 className={styles.media}
-                image={img}
+                image={IMAGE_SERVER_URL + img}
                 title={caption}
             />
             <CardContent className={styles.content}>

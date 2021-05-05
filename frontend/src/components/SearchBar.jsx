@@ -31,7 +31,7 @@ function SearchBar() {
                 value={search}
                 onChange={handleChange}
                 className={styles.input}
-                placeholder="Search for images"
+                placeholder="Search by @username, #hashtag, or keywords"
             />
             <Divider orientation="vertical" className={styles.divider} />
             <LargeTextTooltip
