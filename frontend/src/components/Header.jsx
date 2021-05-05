@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import SearchBar from "./SearchBar";
+import SearchBar from "./search/SearchBar";
 import { Button } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import styles from '../../styles/Header.module.css';
@@ -41,9 +41,9 @@ function Header() {
                 <div className={styles.container}>
                     <div className={styles.content}>
                         <SearchBar />
-                        <Button variant="outlined" className={styles.button} onClick={handleOpen}>
-                            <Add /> New
-                        </Button>
+                        {/*<Button variant="outlined" className={styles.button} onClick={handleOpen}>*/}
+                        {/*    <Add /> New*/}
+                        {/*</Button>*/}
                     </div>
                     <div className={styles.upload} style={ !showImageSearch ? { display: 'none' } : null }>
                         <label className={styles.uploadLabel}>

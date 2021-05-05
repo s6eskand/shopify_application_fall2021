@@ -5,7 +5,7 @@ import styles from '../../../styles/ImageList.module.css';
 import { Divider, Typography, LinearProgress } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 
-function ImageList({ images }) {
+function ImageList({ images, title }) {
     const { imageList, search, imagesLoading } = useContext(ImageContext);
     const [filteredImages, setFilteredImages] = useState([]);
 
@@ -13,18 +13,10 @@ function ImageList({ images }) {
         setFilteredImages([...images])
     }, [imageList])
 
-    useEffect(() => {
-        setFilteredImages([
-            ...imageList.filter(image =>
-                image.title.includes(search) || image.caption.includes(search)
-            )
-        ])
-    }, [search])
-
     return (
         <div className={styles.container}>
             <Typography variant="h5" className={styles.title}>
-                Images
+                {title}
             </Typography>
             <Divider className={styles.divider} />
             {imagesLoading && <LinearProgress />}

@@ -1,12 +1,11 @@
 import React from 'react';
-import Navbar from "./Navbar";
 import Head from "next/head";
-import Header from "./Header";
-import ImageList from "./images/ImageList";
+import Navbar from "../Navbar";
+import ImageList from "../images/ImageList";
+import Header from "../Header";
 
-function Main({ images }) {
-
-    return (
+function SearchResult({ images, title }) {
+    return(
         <>
             <Navbar />
             <Head>
@@ -16,9 +15,9 @@ function Main({ images }) {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
             <Header />
-            <ImageList images={images} title="Featured Images" />
+            <ImageList images={images} title={title} />
         </>
     )
 }
 
-export default Main;
+export default SearchResult;

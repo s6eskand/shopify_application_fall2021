@@ -64,8 +64,7 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
         } else {
             return (
                 <Avatar>
-                    U
-                    {/*{author?.username[0].toUpperCase()}*/}
+                    {author?.username[0].toUpperCase()}
                 </Avatar>
             )
         }
@@ -77,6 +76,7 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
             <CardHeader
                 className={styles.title}
                 title={title}
+                subheader={`By: ${author.username}`}
                 avatar={avatar()}
             />
             <CardMedia
