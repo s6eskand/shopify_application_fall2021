@@ -8,6 +8,7 @@ from ..models import UserSetting
 from images.models import Image
 from images.api.serializers import ImageSerializer
 from .serializers import UserSettingSerializer
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class UserProfileRetrieveView(views.APIView):
@@ -16,6 +17,12 @@ class UserProfileRetrieveView(views.APIView):
         usersetting = UserSetting.objects.get(owner__username=username)
         profile = UserSettingSerializer(usersetting).data
         imagesqueryset = Image.objects.filter(owner__username=username)
+        try:
+            profile_picture = imagesqueryset.get(profile_picture=True)
+            profile_picture_url = ImageSerializer(profile_picture).data["image"]["full_size"]
+            profile["profile_picture"] = profile_picture_url
+        except ObjectDoesNotExist:
+            profile["profile_picture"] = None
         images = ImageSerializer(imagesqueryset, many=True).data
         jsonResponse = {
             "profile": profile,
