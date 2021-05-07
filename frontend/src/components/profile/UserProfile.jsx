@@ -43,6 +43,7 @@ function UserProfile({ profile, images, username, isAccount = false }) {
                             />
                             :
                             <ImageList
+                                isAccount={isAccount}
                                 images={images}
                                 title={isAccount ? "Your photos" : "Public photos"} profile={profile}
                             />

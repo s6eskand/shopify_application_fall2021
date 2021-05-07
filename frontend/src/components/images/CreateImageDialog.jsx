@@ -14,6 +14,7 @@ import styles from '../../../styles/CreateImageDialog.module.css';
 import AlertSnackbar from "../AlertSnackbar";
 import { AlertContext } from "../../providers/AlertProvider";
 import { ImageContext } from "../../providers/ImageProvider";
+import { AuthContext } from "../../providers/AuthProvider";
 
 function CreateImageDialog({ open, handleClose }) {
     const [state, setState] = useState({
@@ -25,6 +26,7 @@ function CreateImageDialog({ open, handleClose }) {
     const fullscreen = useMediaQuery("(max-width:760px)");
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
     const { generateCaption, captionLoading, createImageLoading, createImage } = useContext(ImageContext);
+    const { user } = useContext(AuthContext);
 
     const handleChange = (event) => {
         setState({
@@ -60,7 +62,8 @@ function CreateImageDialog({ open, handleClose }) {
         formData.append("image", imageFile);
         formData.append("title", state.title);
         formData.append("caption", state.caption);
-        const created = await createImage(formData);
+        formData.append("owner", user.id)
+        const created = await createImage(formData, false);
         if (created) {
             openAlertSnackbar(
                 "success",

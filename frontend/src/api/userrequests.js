@@ -33,3 +33,18 @@ export const getUserAccountProxy = () => {
         .then(res => res)
         .catch(err => err)
 }
+
+export const updateUserSettings = (data) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    return axios.put(
+        BASE_URL + ENDPOINTS.USER.ACCOUNT,
+        data,
+        {
+            headers: {
+                "Authorization": `Token ${token}`
+            }
+        }
+    )
+        .then(res => res)
+        .catch(err => err)
+}

@@ -5,7 +5,7 @@ import styles from '../../../styles/ImageList.module.css';
 import { Divider, Typography, LinearProgress } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 
-function ImageList({ images, title, profile = null }) {
+function ImageList({ images, title, profile = null, isAccount = false }) {
     const { imageList, search, imagesLoading } = useContext(ImageContext);
     const [filteredImages, setFilteredImages] = useState([]);
 
@@ -27,6 +27,7 @@ function ImageList({ images, title, profile = null }) {
                     {filteredImages.map((image, idx) => (
                         <div className={styles.image} key={idx}>
                             <ImageCard
+                                id={image.pk}
                                 title={image.title}
                                 caption={image.caption}
                                 img={image.image.full_size}
@@ -39,12 +40,12 @@ function ImageList({ images, title, profile = null }) {
                 </div>
                 :
                 <EmptyImageList
-                    text={search ?
+                    text={isSearch ?
                         "Nothing matches your search! Try again or create your missing image!"
                         :
                         "Woah! Nothing here yet!"
                     }
-                    src={search ? "/empty_page.png" : "/empty_page2.png"}
+                    src={isSearch ? "/empty_page.png" : "/empty_page2.png"}
                 />
             }
         </>

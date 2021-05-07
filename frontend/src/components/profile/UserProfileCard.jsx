@@ -1,34 +1,98 @@
 import React, { useContext, useState } from 'react';
-import { TextField, Typography } from "@material-ui/core";
+import { FormControlLabel, Switch, TextField, Typography } from "@material-ui/core";
 import styles from '../../../styles/UserProfile.module.css';
 import AlertSnackbar from "../AlertSnackbar";
 import { AlertContext } from "../../providers/AlertProvider";
+import { Edit } from "@material-ui/icons";
+import { ImageContext } from "../../providers/ImageProvider";
+import { updateUserSettings } from "../../api/userrequests";
 
 const IMAGE_SERVER_URL = "http://localhost:8000";
 const REACT_APP_URL = "http://localhost:3000";
 
 function UserProfileCard({ profile, isAccount, username }) {
     const [edit, setEdit] = useState(false);
-    const [biography, setBiography] = useState("");
+    const [biography, setBiography] = useState(profile.biography);
     const [image, setImage] = useState({
         file: null,
         src: ""
     })
+    const [isPrivate, setIsPrivate] = useState(profile.private);
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
+    const { createImage } = useContext(ImageContext);
 
     const handleEdit = () => setEdit(true);
 
     const handleCancel = () => {
         setEdit(false);
-        setBiography("");
+        setBiography(profile.biography);
         setImage({
             file: null,
             src: ""
         })
     }
 
-    const handleSave = () => {
-        setEdit(false);
+    const handlePrivateChange = () => {
+        setIsPrivate(prevState => !prevState);
+    }
+
+    const setProfilePicture = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = (event) => {
+                setImage({
+                    file,
+                    src: event.target.result
+                })
+            }
+            fileReader.onerror = (event) => {
+                openAlertSnackbar(
+                    "error",
+                    3000,
+                    "Error reading file contents"
+                )
+            }
+        }
+    }
+
+    const handleSave = async () => {
+        let created = true;
+        if (image.file) {
+            const formData = new FormData();
+            formData.append("image", image.file);
+            formData.append("title", "Profile picture for " + username);
+            formData.append("caption", "a profile picture");
+            formData.append("owner", profile.owner);
+            formData.append("profile_picture", "True");
+            created = await createImage(formData, true);
+        }
+        if (created) {
+            const data = {
+                owner: profile.owner,
+                biography,
+                private: isPrivate
+            }
+            const response = await updateUserSettings(data);
+            if (response.status !== 200) {
+                openAlertSnackbar(
+                    "error",
+                    3000,
+                    "Bad request, something went wrong"
+                )
+                handleCancel()
+            } else {
+                openAlertSnackbar(
+                    "success",
+                    3000,
+                    "Profile updated successfully"
+                )
+            }
+            setEdit(false);
+        } else {
+            handleCancel();
+        }
     }
 
     const handleBiographyEdit = (event) => {
@@ -36,6 +100,9 @@ function UserProfileCard({ profile, isAccount, username }) {
     }
 
     const getProfilePicture = () => {
+        if (image.src !== "") {
+            return image.src;
+        }
         if (profile.profile_picture) {
             return IMAGE_SERVER_URL + profile.profile_picture;
         }
@@ -55,19 +122,35 @@ function UserProfileCard({ profile, isAccount, username }) {
     return (
         <>
             <div className={styles.card}>
-                <img
-                    className={styles.profilePicture}
-                    width={250}
-                    height={250}
-                    src={getProfilePicture()}
-                    alt=""
-                />
+                <div className={styles.imageWrapper}>
+                    <img
+                        className={edit ? styles.editProfilePicture : styles.profilePicture}
+                        width={250}
+                        height={250}
+                        src={getProfilePicture()}
+                        alt=""
+                    />
+                    {edit &&
+                        <div className={styles.imageOverlay}>
+                            <label className={styles.imageLabel}>
+                                <Edit/>
+                                Change Avatar
+                                <input
+                                    style={{display: 'none'}}
+                                    type="file"
+                                    onChange={setProfilePicture}
+                                    accept="image/png, image/jpg, image/jpeg"
+                                />
+                            </label>
+                        </div>
+                    }
+                </div>
                 <Typography variant="h4" component="p" className={styles.username}>
                     {username}
                 </Typography>
                 {!edit ?
                     <Typography variant="body1" component="p">
-                        {profile.biography}
+                        {biography}
                     </Typography>
                     :
                     <>
@@ -86,6 +169,13 @@ function UserProfileCard({ profile, isAccount, username }) {
                         <Typography variant="subtitle2" component="p">
                             {biography.length} / 300
                         </Typography>
+                        <FormControlLabel
+                            onChange={handlePrivateChange}
+                            control={
+                                <Switch color="primary" checked={isPrivate} />
+                            }
+                            label={isPrivate ? "Make account public" : "Make account private"}
+                        />
                     </>
                 }
                 {isAccount &&

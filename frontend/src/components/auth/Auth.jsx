@@ -104,6 +104,8 @@ function Auth() {
                             variant="outlined"
                             color="primary"
                             disabled={
+                                loading
+                                ||
                                 (!state.isLogin && !state.email && !state.password2 || !state.isLogin && state.password2 !== state.password)
                                 ||
                                 (state.isLogin && !state.username && !state.password)

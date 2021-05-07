@@ -81,10 +81,11 @@ const ImageProvider = ({ children }) => {
         }
     }
 
-    const createImage = async (data) => {
+    const createImage = async (data, isProfilePicture) => {
         setCreateImageLoading(true);
         try {
-            await createImageRequest(data);
+            const query = isProfilePicture ? "?dp=True" : ""
+            await createImageRequest(data, query);
             setCreateImageLoading(false);
             return true;
         } catch {

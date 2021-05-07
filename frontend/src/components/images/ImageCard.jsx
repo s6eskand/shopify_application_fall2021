@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
     Card,
     CardHeader,
@@ -14,11 +14,15 @@ import styles from '../../../styles/ImageCard.module.css';
 import { AlertContext } from "../../providers/AlertProvider";
 import AlertSnackbar from "../AlertSnackbar";
 import { useRouter } from "next/router";
+import { updateLikesOrShares } from "../../api/imagecrud";
 
 const REACT_APP_URL = "http://localhost:3000/images/"
 const IMAGE_SERVER_URL = "http://localhost:8000";
 
-function ImageCard({ title, caption, img, likes, shares, author }) {
+function ImageCard({ id, title, caption, img, likes, shares, author }) {
+    const [liked, setLiked] = useState(false);
+    const [numLikes, setNumLikes] = useState(likes);
+    const [numShares, setNumShares] = useState(shares);
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
     const router = useRouter();
 
@@ -31,14 +35,32 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
         )
     }
 
+    const handleLike = async () => {
+        const value = liked ? -1 : 1;
+        setNumLikes(prevState => prevState + value)
+        setLiked(prevState => !prevState);
+        const data = {
+            pk: id,
+            likes: value,
+            shares: 0
+        }
+        const response = await updateLikesOrShares(data);
+        if (response.status !== 204) {
+            setNumLikes(prevState => prevState - value);
+            setLiked(prevState => !prevState)
+        }
+    }
+
     const handleShare = async () => {
         await navigator.clipboard.writeText(REACT_APP_URL + title);
+        setNumShares(prevState => prevState + 1);
         openAlertSnackbar(
             "success",
             3000,
             "Shareable link copied to clipboard!",
             "Show off your photo!"
         )
+        await updateLikesOrShares({pk: id, likes: 0, shares: 1});
     }
 
     const handleNavigate = async () => {
@@ -98,10 +120,10 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
             </CardContent>
             <CardActions disableSpacing className={styles.actions}>
                 <div className={styles.actiontextcontainer}>
-                    <IconButton>
-                        <FavoriteBorder />
+                    <IconButton onClick={handleLike}>
+                        {liked ? <Favorite color="secondary" /> : <FavoriteBorder/>}
                     </IconButton>
-                    <p className={styles.actiontext}>{` ${formatNumber(likes)} likes`}</p>
+                    <p className={styles.actiontext}>{` ${formatNumber(numLikes)} likes`}</p>
                 </div>
                 <div className={styles.actiontextcontainer}>
                     <Tooltip title="Share image" arrow>
@@ -109,7 +131,7 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
                             <Reply />
                         </IconButton>
                     </Tooltip>
-                    <p className={styles.actiontext}>{` ${formatNumber(shares)} shares`}</p>
+                    <p className={styles.actiontext}>{` ${formatNumber(numShares)} shares`}</p>
                 </div>
                 <Tooltip title="Copy image URL" arrow>
                     <IconButton onClick={handleCopy}>
