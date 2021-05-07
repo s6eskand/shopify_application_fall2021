@@ -9,6 +9,7 @@ from images.models import Image
 from images.api.serializers import ImageSerializer
 from .serializers import UserSettingSerializer
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 
 class UserProfileRetrieveView(views.APIView):
@@ -28,6 +29,16 @@ class UserProfileRetrieveView(views.APIView):
             "profile": profile,
             "images": images
         }
+        for image in images:
+            author = User.objects.get(id=image["owner"])
+            try:
+                profile_picture = Image.objects.get(owner=author, profile_picture=True)
+            except ObjectDoesNotExist:
+                profile_picture = None
+            user = {"username": author.username}
+            if profile_picture:
+                user["profile_picture"] = ImageSerializer(profile_picture).data["image"]["avatar"]
+            image["author"] = user
         if usersetting.private:
             jsonResponse["images"] = []
             return response.Response(
@@ -48,9 +59,21 @@ class UserSettingRetrieveUpdateView(views.APIView):
 
     def get(self, request):
         usersetting = UserSetting.objects.get(owner=self.request.user)
-        serializer = UserSettingSerializer(usersetting)
+        usersettingdata = UserSettingSerializer(usersetting).data
+        usersettingdata["username"] = self.request.user.username
+        imagequeryset = Image.objects.filter(owner=self.request.user, profile_picture=False)
+        imagedata = ImageSerializer(imagequeryset, many=True).data
+        try:
+            profile_picture = Image.objects.get(owner=self.request.user, profile_picture=True)
+            usersettingdata["profile_picture"] = ImageSerializer(profile_picture).data["image"]["full_size"]
+        except ObjectDoesNotExist:
+            usersettingdata["profile_picture"] = None
+        jsonResponse = {
+            "profile": usersettingdata,
+            "imagedata": imagedata
+        }
         return response.Response(
-            data=serializer.data,
+            data=jsonResponse,
             status=status.HTTP_200_OK
         )
 

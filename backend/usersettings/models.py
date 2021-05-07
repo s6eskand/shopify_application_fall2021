@@ -10,3 +10,7 @@ class UserSetting(models.Model):
     )
     likes_visible = models.BooleanField(default=True)
     private = models.BooleanField(default=False)
+    biography = models.CharField(
+        default="Nothing to see here yet!",
+        max_length=300
+    )
