@@ -20,3 +20,19 @@ export const generateCaptionRequest = (formData) => {
             throw new Error(err)
         })
 }
+
+export const reverseImageSearchRequest = (formData) => {
+    return axios.post(
+        PREDICTIONS_BASE_URL + ENDPOINTS.SEARCH,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+    )
+        .then(res => res.data)
+        .catch(err => {
+            throw new Error(err)
+        })
+}

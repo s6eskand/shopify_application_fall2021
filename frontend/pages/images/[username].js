@@ -2,16 +2,19 @@ import React from 'react';
 import { retrieveImageByTitle } from "../../src/api/imagecrud";
 import Navbar from "../../src/components/Navbar";
 import Head from "next/head";
-import { Typography } from "@material-ui/core";
 import DetailedImage from "../../src/components/images/DetailedImage";
 
 export async function getServerSideProps(context) {
-    const { title, w, h } = context.query;
+    const { username, title, w, h } = context.query;
 
-    const response = await retrieveImageByTitle(title);
+    const query = username + "?title=" + title;
+
+    let notFound = true;
+    const response = await retrieveImageByTitle(query);
     let image;
     if (response.status === 200) {
         image = await response.data;
+        notFound = false;
     } else {
         image = {
             title: "404, This image doesn't exist!",
@@ -26,12 +29,13 @@ export async function getServerSideProps(context) {
         props: {
             image,
             width: w ? w : null,
-            height: h ? h : null
+            height: h ? h : null,
+            notFound
         }
     }
 
 }
-function Image({ image, width, height }) {
+function Image({ image, width, height, notFound }) {
 
     return (
         <>
@@ -55,7 +59,7 @@ function Image({ image, width, height }) {
                     content={image.image.full_size}
                 />
             </Head>
-            <DetailedImage image={image} width={width} height={height} />
+            <DetailedImage image={image} width={width} height={height} notFound={notFound} />
         </>
     )
 }

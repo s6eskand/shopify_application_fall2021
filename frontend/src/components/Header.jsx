@@ -4,16 +4,15 @@ import { Button } from '@material-ui/core';
 import styles from '../../styles/Header.module.css';
 import { ImageContext } from "../providers/ImageProvider";
 import { AlertContext } from "../providers/AlertProvider";
-import CreateImageDialog from "./images/CreateImageDialog";
 import AlertSnackbar from "./AlertSnackbar";
 
-function Header() {
-    const [image, setImage] = useState("");
-    const { openDialog, setOpenDialog, showImageSearch } = useContext(ImageContext);
+function Header({ isImageSearch = false }) {
+    const [image, setImage] = useState({
+        file: null,
+        src: ""
+    });
+    const { showImageSearch, setShowImageSearch, reverseImageSearch } = useContext(ImageContext);
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
-
-    const handleOpen = () => setOpenDialog(true);
-    const handleClose = () => setOpenDialog(false);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -21,7 +20,10 @@ function Header() {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file);
             fileReader.onload = (event) => {
-                setImage(event.target.result)
+                setImage({
+                    file,
+                    src: event.target.result
+                });
             }
             fileReader.onerror = (event) => {
                 openAlertSnackbar(
@@ -33,16 +35,22 @@ function Header() {
         }
     }
 
+    const handleSearch = async () => {
+        if (image.file) {
+            await reverseImageSearch(image.file);
+        }
+    }
+
+    const handleCancel = () => {
+        setShowImageSearch(false);
+    }
+
     return (
         <>
-            <CreateImageDialog open={openDialog} handleClose={handleClose} />
             <div className={styles.root}>
                 <div className={styles.container}>
                     <div className={styles.content}>
-                        <SearchBar />
-                        {/*<Button variant="outlined" className={styles.button} onClick={handleOpen}>*/}
-                        {/*    <Add /> New*/}
-                        {/*</Button>*/}
+                        <SearchBar isImageSearch={isImageSearch} />
                     </div>
                     <div className={styles.upload} style={ !showImageSearch ? { display: 'none' } : null }>
                         <label className={styles.uploadLabel}>
@@ -54,19 +62,30 @@ function Header() {
                                 onChange={handleFileChange}
                             />
                         </label>
-                        {image !== "" ?
+                        {image.src !== "" ?
                             <div className={styles.displayImage}>
                                 <img
-                                    src={image}
+                                    src={image.src}
                                     width={250}
                                     alt="your uploaded image"
                                 />
-                                <Button
-                                    // TODO implement search by image function
-                                    color="primary"
-                                >
-                                    Search
-                                </Button>
+                                <div className={styles.searchActions}>
+                                    <Button
+                                        onClick={handleSearch}
+                                        variant="outlined"
+                                        color="primary"
+                                        style={{marginRight: 10}}
+                                    >
+                                        Search
+                                    </Button>
+                                    <Button
+                                        onClick={handleCancel}
+                                        variant="outlined"
+                                        color="secondary"
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
                             </div> : null
                         }
                     </div>

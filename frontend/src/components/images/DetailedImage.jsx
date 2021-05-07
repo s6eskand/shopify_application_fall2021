@@ -2,7 +2,9 @@ import React from 'react';
 import { Typography } from "@material-ui/core";
 import styles from '../../../styles/DetailedImage.module.css';
 
-function DetailedImage({ image, width, height }) {
+const IMAGE_SERVER_URL = "http://localhost:8000"
+
+function DetailedImage({ image, width, height, notFound }) {
     return (
         <div className={styles.container}>
             <Typography variant="h3">
@@ -12,7 +14,7 @@ function DetailedImage({ image, width, height }) {
                 {image.caption}
             </Typography>
             <img
-                src={image.image.full_size}
+                src={notFound ? "" : IMAGE_SERVER_URL + image.image.full_size}
                 alt={image.caption}
                 width={width && width}
                 height={height && height}

@@ -8,7 +8,7 @@ import {
     Button,
     DialogContentText,
     CircularProgress,
-    useMediaQuery
+    useMediaQuery, RadioGroup, FormControlLabel, Radio
 } from "@material-ui/core";
 import styles from '../../../styles/CreateImageDialog.module.css';
 import AlertSnackbar from "../AlertSnackbar";
@@ -20,7 +20,8 @@ function CreateImageDialog({ open, handleClose }) {
     const [state, setState] = useState({
         title: "",
         caption: "",
-        image: ""
+        image: "",
+        private: "False"
     })
     const [imageFile, setImageFile] = useState(null);
     const fullscreen = useMediaQuery("(max-width:760px)");
@@ -40,6 +41,7 @@ function CreateImageDialog({ open, handleClose }) {
             title: "",
             caption: "",
             image: "",
+            private: false
         })
         setImageFile(null)
         handleClose();
@@ -62,7 +64,8 @@ function CreateImageDialog({ open, handleClose }) {
         formData.append("image", imageFile);
         formData.append("title", state.title);
         formData.append("caption", state.caption);
-        formData.append("owner", user.id)
+        formData.append("owner", user.id);
+        formData.append("private", state.private);
         const created = await createImage(formData, false);
         if (created) {
             openAlertSnackbar(
@@ -138,6 +141,12 @@ function CreateImageDialog({ open, handleClose }) {
                             />
                         </div> : null
                     }
+                    <div>
+                        <RadioGroup value={state.private} name="private" onChange={handleChange}>
+                            <FormControlLabel value="False" control={<Radio />} label="Public" />
+                            <FormControlLabel value="True" control={<Radio />} label="Private" />
+                        </RadioGroup>
+                    </div>
                     <TextField
                         required
                         margin="dense"
@@ -152,7 +161,6 @@ function CreateImageDialog({ open, handleClose }) {
                             variant="outlined"
                             color="primary"
                             disabled={state.image === "" || captionLoading || state.caption !== ""}
-                            style={{ marginRight: 10 }}
                             onClick={handleGenerateCaption}
                         >
                             Generate Caption

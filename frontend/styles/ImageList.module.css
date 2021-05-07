@@ -6,6 +6,18 @@
   margin-left: auto;
 }
 
+.imagelistHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.button {
+  background-color: #0450D5 !important;
+  color: #f9f9f9 !important;
+  margin: 50px 80px 5px 0 !important;
+}
+
 .imagelist {
   display: flex;
   flex-wrap: wrap;
@@ -29,6 +41,15 @@
 @media (max-width: 760px) {
   .title {
     text-align: center;
+  }
+
+  .imagelistHeader {
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .button {
+    margin: 15px 0 !important;
   }
 
   .divider {

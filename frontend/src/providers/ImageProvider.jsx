@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { listImagesRequest, createImageRequest } from "../api/imagecrud";
-import { generateCaptionRequest } from "../api/predictionrequests";
+import { generateCaptionRequest, reverseImageSearchRequest } from "../api/predictionrequests";
 import { AlertContext } from "./AlertProvider";
 
 export const ImageContext = createContext({
     imageList: [],
-    setImageList: () => { },
     search: "",
     handleSearch: () => { },
     aboutDialog: false,
@@ -18,7 +17,8 @@ export const ImageContext = createContext({
     setOpenDialog: () => { },
     createImage: () => { },
     showImageSearch: false,
-    setShowImageSearch: () => { }
+    setShowImageSearch: () => { },
+    reverseImageSearch: () => { },
 })
 
 const ImageProvider = ({ children }) => {
@@ -100,6 +100,27 @@ const ImageProvider = ({ children }) => {
         }
     }
 
+    const reverseImageSearch = async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("images", JSON.stringify(imageList));
+        try {
+            const response = await reverseImageSearchRequest(formData);
+            const matched = new Set(response.similar_images);
+            const test = [...imageList.filter(image => matched.has(image.pk))]
+            setImageList(test)
+            setShowImageSearch(false);
+        } catch {
+            openAlertSnackbar(
+                "error",
+                5000,
+                "Oops! Something went wrong. Please try again.",
+                "Something went wrong..."
+            )
+        }
+
+    }
+
     const handleSearch = (newVal) => {
         setSearch(newVal);
     }
@@ -120,6 +141,7 @@ const ImageProvider = ({ children }) => {
                 createImage,
                 showImageSearch,
                 setShowImageSearch,
+                reverseImageSearch
             }}
         >
             {children}

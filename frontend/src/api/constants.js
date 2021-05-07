@@ -4,6 +4,7 @@ export const REACT_APP_URL = "http://localhost:3000";
 
 export const ENDPOINTS = {
     CAPTION: "/caption",
+    SEARCH: "/search",
     IMAGES: {
         LIST: "/images",
         CREATE: "/images/create",

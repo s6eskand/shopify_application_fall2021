@@ -33,7 +33,7 @@ def compare_captions(caption1, caption2):
     count = 0
     for key in caption1:
         if key in caption2:
-            count += caption2[key]
+            count += caption1[key]
     return count
 
 
@@ -67,14 +67,13 @@ def generate_caption(encoder, decoder, image, image_features_extraction, tokeniz
 
 def search_images(encoder, decoder, image, image_features_extraction, tokenizer, images):
     caption = generate_caption(encoder, decoder, image, image_features_extraction, tokenizer)
-    # response = requests.get("http://localhost:8000/images")
-    # response_dict = json.loads(response.content)
+
     subject = tokenize_caption(caption[:-1])
     heap = []
     heapify(heap)
     images_json = json.loads(images)
     for img in images_json:
-        compare = tokenize_caption(img["caption"].split())
+        compare = img["caption"]
         score = compare_captions(subject, compare)
         heappush(heap, (score * -1, img["pk"]))
 

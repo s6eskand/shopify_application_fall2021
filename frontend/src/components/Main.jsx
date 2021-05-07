@@ -16,9 +16,9 @@ function Main({ images }) {
                       content="An image repository built by Sam Eskandar for the Shopify Fall 2021 Dev Challenge"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <Header />
+            <Header isImageSearch />
             <div className={styles.container}>
-                <ImageList images={images} title="Featured Images" />
+                <ImageList images={images} title="Featured Images" isImageSearch />
             </div>
         </>
     )

@@ -11,7 +11,7 @@ const LargeTextTooltip = withStyles({
     }
 })(Tooltip)
 
-function SearchBar() {
+function SearchBar({ isImageSearch = false }) {
     const { search, handleSearch, setShowImageSearch } = useContext(ImageContext);
     const router = useRouter();
 
@@ -45,15 +45,19 @@ function SearchBar() {
                 className={styles.input}
                 placeholder="Search by @username, #hashtag, or keywords"
             />
-            <Divider orientation="vertical" className={styles.divider} />
-            <LargeTextTooltip
-                title="Search images through an uploaded image"
-                arrow
-            >
-                <IconButton className={styles.iconButton} onClick={handleImageSearch}>
-                    <ImageSearch />
-                </IconButton>
-            </LargeTextTooltip>
+            {isImageSearch &&
+                <>
+                    <Divider orientation="vertical" className={styles.divider}/>
+                    <LargeTextTooltip
+                        title="Search images through an uploaded image"
+                        arrow
+                    >
+                        <IconButton className={styles.iconButton} onClick={handleImageSearch}>
+                            <ImageSearch />
+                        </IconButton>
+                    </LargeTextTooltip>
+                </>
+            }
         </Paper>
     )
 }

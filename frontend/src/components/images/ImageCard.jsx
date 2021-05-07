@@ -9,7 +9,7 @@ import {
     IconButton,
     Tooltip, Avatar
 } from "@material-ui/core";
-import { Link as LinkIcon, FavoriteBorder, Favorite, Reply } from "@material-ui/icons";
+import { Link as LinkIcon, FavoriteBorder, Favorite, Reply, Image, Lock } from "@material-ui/icons";
 import styles from '../../../styles/ImageCard.module.css';
 import { AlertContext } from "../../providers/AlertProvider";
 import AlertSnackbar from "../AlertSnackbar";
@@ -19,7 +19,7 @@ import { updateLikesOrShares } from "../../api/imagecrud";
 const REACT_APP_URL = "http://localhost:3000/images/"
 const IMAGE_SERVER_URL = "http://localhost:8000";
 
-function ImageCard({ id, title, caption, img, likes, shares, author }) {
+function ImageCard({ id, title, caption, img, likes, shares, author, isPrivate }) {
     const [liked, setLiked] = useState(false);
     const [numLikes, setNumLikes] = useState(likes);
     const [numShares, setNumShares] = useState(shares);
@@ -67,6 +67,10 @@ function ImageCard({ id, title, caption, img, likes, shares, author }) {
         await router.push("/user/@" + author.username)
     }
 
+    const handleOpenImage = async () => {
+        await router.push(`/images/${author.username}?title=${title}`)
+    }
+
     const trimCaption = () => {
         if (caption.length > 99) {
             return caption.substring(0, 99) + "...";
@@ -107,6 +111,7 @@ function ImageCard({ id, title, caption, img, likes, shares, author }) {
                 title={title}
                 subheader={`By: ${author.username}`}
                 avatar={avatar()}
+                action={isPrivate && <Lock />}
             />
             <CardMedia
                 className={styles.media}
@@ -136,6 +141,11 @@ function ImageCard({ id, title, caption, img, likes, shares, author }) {
                 <Tooltip title="Copy image URL" arrow>
                     <IconButton onClick={handleCopy}>
                         <LinkIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="View full image" arrow>
+                    <IconButton onClick={handleOpenImage}>
+                        <Image />
                     </IconButton>
                 </Tooltip>
             </CardActions>

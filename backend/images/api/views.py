@@ -82,7 +82,7 @@ class ImageCreateView(viewsets.ModelViewSet):
     queryset = Image.objects.all()
 
     def create(self, request):
-        if self.request.query_params["dp"] and self.request.data["profile_picture"]:
+        if "dp" in self.request.query_params and self.request.data["profile_picture"]:
             try:
                 curr = self.queryset.filter(owner=self.request.user).get(profile_picture=True)
                 curr.delete()
