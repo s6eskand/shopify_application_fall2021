@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react';
 import SearchBar from "./search/SearchBar";
 import { Button } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
 import styles from '../../styles/Header.module.css';
-import ImageProvider, { ImageContext } from "../providers/ImageProvider";
-import AlertProvider, { AlertContext } from "../providers/AlertProvider";
+import { ImageContext } from "../providers/ImageProvider";
+import { AlertContext } from "../providers/AlertProvider";
 import CreateImageDialog from "./images/CreateImageDialog";
-import AlertSnackbar from "./globals/AlertSnackbar";
+import AlertSnackbar from "./AlertSnackbar";
 
 function Header() {
     const [image, setImage] = useState("");

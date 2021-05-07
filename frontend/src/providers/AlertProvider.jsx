@@ -27,7 +27,6 @@ const AlertProvider = ({ children }) => {
     }, [state.openAlert])
 
     const openAlertSnackbar = (severity, timeout, message, alertTitle) => {
-
         setState({
             ...state,
             openAlert: true,

@@ -12,13 +12,15 @@ import {
 import { Link as LinkIcon, FavoriteBorder, Favorite, Reply } from "@material-ui/icons";
 import styles from '../../../styles/ImageCard.module.css';
 import { AlertContext } from "../../providers/AlertProvider";
-import AlertSnackbar from "../globals/AlertSnackbar";
+import AlertSnackbar from "../AlertSnackbar";
+import { useRouter } from "next/router";
 
 const REACT_APP_URL = "http://localhost:3000/images/"
 const IMAGE_SERVER_URL = "http://localhost:8000";
 
 function ImageCard({ title, caption, img, likes, shares, author }) {
     const { openAlertSnackbar, openAlert, severity, message, alertTitle } = useContext(AlertContext);
+    const router = useRouter();
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(IMAGE_SERVER_URL + img);
@@ -37,6 +39,10 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
             "Shareable link copied to clipboard!",
             "Show off your photo!"
         )
+    }
+
+    const handleNavigate = async () => {
+        await router.push("/user/@" + author.username)
     }
 
     const trimCaption = () => {
@@ -74,6 +80,7 @@ function ImageCard({ title, caption, img, likes, shares, author }) {
         <>
         <Card className={styles.root}>
             <CardHeader
+                onClick={handleNavigate}
                 className={styles.title}
                 title={title}
                 subheader={`By: ${author.username}`}

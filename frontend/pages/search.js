@@ -1,7 +1,6 @@
 import React from 'react';
 import AlertProvider from "../src/providers/AlertProvider";
 import ImageProvider from "../src/providers/ImageProvider";
-import AuthGate from "../src/components/auth/AuthGate";
 import SearchResult from "../src/components/search/SearchResult";
 import AuthProvider from "../src/providers/AuthProvider";
 import { listImagesRequest } from "../src/api/imagecrud";
@@ -34,9 +33,7 @@ function Search({ images, title }) {
         <AuthProvider>
             <AlertProvider>
                 <ImageProvider>
-                    <AuthGate>
-                        <SearchResult images={images} title={title} />
-                    </AuthGate>
+                    <SearchResult images={images} title={title} />
                 </ImageProvider>
             </AlertProvider>
         </AuthProvider>

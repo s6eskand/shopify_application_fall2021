@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 import styles from '../../../styles/Auth.module.css';
 import { TextField, Button, Typography, CircularProgress } from "@material-ui/core";
 import { AuthContext } from "../../providers/AuthProvider";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 function Auth() {
     const [state, setState] = useState({
@@ -12,6 +14,7 @@ function Auth() {
         isLogin: true
     });
     const { login, register, loading } = useContext(AuthContext);
+    const router = useRouter();
 
     const handleChange = (event) => {
         setState({
@@ -29,14 +32,14 @@ function Auth() {
 
     const handleAction = () => {
         if (state.isLogin) {
-            login(state.username, state.password)
+            login(state.username, state.password, router)
         } else {
             const data = {
                 username: state.username,
                 email: state.email,
                 password: state.password
             }
-            register(data)
+            register(data, router)
         }
     }
 
@@ -112,6 +115,11 @@ function Auth() {
                     </div>
                     <p onClick={handleChangeAction} className={styles.changeaction}>{state.isLogin ? "Register" : "Login"} instead</p>
                 </div>
+                <Link href="/">
+                    <Typography variant="body2" className={styles.home}>
+                        Take me home
+                    </Typography>
+                </Link>
             </div>
         </div>
     )

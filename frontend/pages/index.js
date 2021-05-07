@@ -4,7 +4,6 @@ import ImageProvider from "../src/providers/ImageProvider";
 import { listImagesRequest } from "../src/api/imagecrud";
 import Main from "../src/components/Main";
 import AuthProvider from "../src/providers/AuthProvider";
-import AuthGate from "../src/components/auth/AuthGate";
 
 export async function getServerSideProps(context) {
     const response = await listImagesRequest();
@@ -23,9 +22,7 @@ const Home = ({ images }) => {
         <AuthProvider>
             <AlertProvider>
                 <ImageProvider>
-                    <AuthGate>
-                        <Main images={images} />
-                    </AuthGate>
+                    <Main images={images} />
                 </ImageProvider>
             </AlertProvider>
         </AuthProvider>

@@ -3,6 +3,7 @@ import Head from "next/head";
 import Navbar from "../Navbar";
 import ImageList from "../images/ImageList";
 import Header from "../Header";
+import styles from '../../../styles/ImageList.module.css';
 
 function SearchResult({ images, title }) {
     return(
@@ -15,7 +16,9 @@ function SearchResult({ images, title }) {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
             <Header />
-            <ImageList images={images} title={title} />
+            <div className={styles.container}>
+                <ImageList images={images} title={title} />
+            </div>
         </>
     )
 }

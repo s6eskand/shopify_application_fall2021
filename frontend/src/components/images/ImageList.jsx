@@ -5,7 +5,7 @@ import styles from '../../../styles/ImageList.module.css';
 import { Divider, Typography, LinearProgress } from "@material-ui/core";
 import EmptyImageList from "./EmptyImageList";
 
-function ImageList({ images, title }) {
+function ImageList({ images, title, profile = null }) {
     const { imageList, search, imagesLoading } = useContext(ImageContext);
     const [filteredImages, setFilteredImages] = useState([]);
 
@@ -13,8 +13,10 @@ function ImageList({ images, title }) {
         setFilteredImages([...images])
     }, [imageList])
 
+    const isSearch = search.length > 0;
+
     return (
-        <div className={styles.container}>
+        <>
             <Typography variant="h5" className={styles.title}>
                 {title}
             </Typography>
@@ -30,15 +32,22 @@ function ImageList({ images, title }) {
                                 img={image.image.full_size}
                                 likes={image.likes}
                                 shares={image.shares}
-                                author={image.author}
+                                author={profile ? profile : image.author}
                             />
                         </div>
                     ))}
                 </div>
                 :
-                <EmptyImageList search={search.length > 0} />
+                <EmptyImageList
+                    text={search ?
+                        "Nothing matches your search! Try again or create your missing image!"
+                        :
+                        "Woah! Nothing here yet!"
+                    }
+                    src={search ? "/empty_page.png" : "/empty_page2.png"}
+                />
             }
-        </div>
+        </>
     )
 }
 

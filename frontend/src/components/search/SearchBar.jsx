@@ -26,7 +26,12 @@ function SearchBar() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        await router.push(`/search?query=${search}`)
+        if (search !== "") {
+            if (search[0] === "@") {
+                await router.push(`/user/${search}`)
+            }
+            await router.push(`/search?query=${search}`)
+        }
     }
 
     return (

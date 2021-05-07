@@ -10,7 +10,7 @@ function AlertSnackbar({ severity, message, open, title }) {
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
             <Alert severity={severity}>
-                { title === "" && <AlertTitle>{title}</AlertTitle> }
+                { title !== "" && <AlertTitle>{title}</AlertTitle> }
                 {message}
             </Alert>
         </Snackbar>

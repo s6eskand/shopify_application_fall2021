@@ -44,6 +44,12 @@
     text-decoration: underline;
 }
 
+.home {
+    cursor: pointer;
+    margin-top: 15px !important;
+    text-decoration: underline;
+}
+
 @media (max-width: 760px) {
     .imagebanner {
         display: none;

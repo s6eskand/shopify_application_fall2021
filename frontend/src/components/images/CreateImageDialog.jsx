@@ -11,7 +11,7 @@ import {
     useMediaQuery
 } from "@material-ui/core";
 import styles from '../../../styles/CreateImageDialog.module.css';
-import AlertSnackbar from "../globals/AlertSnackbar";
+import AlertSnackbar from "../AlertSnackbar";
 import { AlertContext } from "../../providers/AlertProvider";
 import { ImageContext } from "../../providers/ImageProvider";
 
