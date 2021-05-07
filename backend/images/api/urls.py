@@ -2,17 +2,18 @@ from django.urls import path
 from .views import (
     ImageListView,
     ImageNonOwnerUpdateView,
-    ImageCreateUpdateView
+    ImageCreateView,
+    ImageRetrieveView
 )
 
-image_create = ImageCreateUpdateView.as_view({
-    "post": "create",
-    "put": "update"
+image_create = ImageCreateView.as_view({
+    'post': 'create'
 })
 
 
 urlpatterns = [
+    path('create', image_create),
     path('', ImageListView.as_view()),
     path('images', ImageNonOwnerUpdateView.as_view()),
-    path('create', image_create)
+    path('<username>', ImageRetrieveView.as_view()),
 ]

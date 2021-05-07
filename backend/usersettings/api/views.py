@@ -17,13 +17,15 @@ class UserProfileRetrieveView(views.APIView):
     def get(self, request, username=None):
         usersetting = UserSetting.objects.get(owner__username=username)
         profile = UserSettingSerializer(usersetting).data
-        imagesqueryset = Image.objects.filter(owner__username=username)
+        profile["username"] = username
+        imagesqueryset = Image.objects.filter(owner__username=username).order_by("timestamp__minute")
         try:
             profile_picture = imagesqueryset.get(profile_picture=True)
             profile_picture_url = ImageSerializer(profile_picture).data["image"]["full_size"]
             profile["profile_picture"] = profile_picture_url
         except ObjectDoesNotExist:
             profile["profile_picture"] = None
+        imagesqueryset = imagesqueryset.filter(profile_picture=False)
         images = ImageSerializer(imagesqueryset, many=True).data
         jsonResponse = {
             "profile": profile,
@@ -61,7 +63,7 @@ class UserSettingRetrieveUpdateView(views.APIView):
         usersetting = UserSetting.objects.get(owner=self.request.user)
         usersettingdata = UserSettingSerializer(usersetting).data
         usersettingdata["username"] = self.request.user.username
-        imagequeryset = Image.objects.filter(owner=self.request.user, profile_picture=False)
+        imagequeryset = Image.objects.filter(owner=self.request.user, profile_picture=False).order_by("timestamp__minute")
         imagedata = ImageSerializer(imagequeryset, many=True).data
         try:
             profile_picture = Image.objects.get(owner=self.request.user, profile_picture=True)

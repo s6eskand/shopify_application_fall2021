@@ -16,6 +16,7 @@ class Image(models.Model):
     shares = models.IntegerField(default=0)
     private = models.BooleanField(default=False)
     profile_picture = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
     image_ppoi = PPOIField()
     owner = models.ForeignKey(
         User,
