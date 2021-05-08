@@ -42,13 +42,21 @@ class ImageNonOwnerUpdateView(views.APIView):
 
     def post(self, request):
         queryset = Image.objects.all()
-        image = queryset.get(pk=request.data['pk'])
-        image.likes += request.data['likes']
-        image.shares += request.data['shares']
-        image.save()
-        return response.Response(
-            status=status.HTTP_204_NO_CONTENT
-        )
+        try:
+            image = queryset.get(pk=request.data['pk'])
+            if 'likes' in request.data:
+                image.likes += request.data['likes']
+            if 'shares' in request.data:
+                image.shares += request.data['shares']
+            if image.likes >= 0:
+                image.save()
+            return response.Response(
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except ObjectDoesNotExist:
+            return response.Response(
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class ImageRetrieveView(views.APIView):
@@ -64,7 +72,7 @@ class ImageRetrieveView(views.APIView):
                     data=serializer.data,
                     status=status.HTTP_200_OK
                 )
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist or KeyError:
             return response.Response(
                 status=status.HTTP_404_NOT_FOUND
             )
