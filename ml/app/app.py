@@ -93,4 +93,4 @@ if __name__ == '__main__':
     )
     image_features_extract_model = get_image_extraction_model()
     tokenizer = get_caption_tokenizer()
-    app.run(port=5000, debug=True, host='0.0.0.0')
+    app.run(port=5000, debug=False, host='0.0.0.0')
