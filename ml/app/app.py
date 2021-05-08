@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from functions.predictions import generate_caption, search_images
 from models.models import get_encoder, get_decoder, get_image_extraction_model, get_caption_tokenizer
-import json
 
 UPLOAD_FOLDER = 'app/assets'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif'}
@@ -49,15 +48,17 @@ def caption():
         file = request.files['file']
         if file and allowed_file(file.filename):
             image = file.read()
-        result = generate_caption(
-            encoder=encoder,
-            decoder=decoder,
-            image=image,
-            image_features_extraction=image_features_extract_model,
-            tokenizer=tokenizer
-        )
-        generated_caption = " ".join(result[:-1])
-        return jsonify({"generated_caption": generated_caption})
+            result = generate_caption(
+                encoder=encoder,
+                decoder=decoder,
+                image=image,
+                image_features_extraction=image_features_extract_model,
+                tokenizer=tokenizer
+            )
+            generated_caption = " ".join(result[:-1])
+            return jsonify({"generated_caption": generated_caption})
+        else:
+            return jsonify({"error": "Invalid file in request body."}), 400
 
 
 @app.route('/search', methods=['POST'])
