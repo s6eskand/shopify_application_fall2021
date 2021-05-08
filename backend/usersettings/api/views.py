@@ -15,7 +15,12 @@ from django.contrib.auth.models import User
 class UserProfileRetrieveView(views.APIView):
 
     def get(self, request, username=None):
-        usersetting = UserSetting.objects.get(owner__username=username)
+        try:
+            usersetting = UserSetting.objects.get(owner__username=username)
+        except ObjectDoesNotExist:
+            return response.Response(
+                status=status.HTTP_404_NOT_FOUND
+            )
         profile = UserSettingSerializer(usersetting).data
         profile["username"] = username
         imagesqueryset = Image.objects.filter(owner__username=username).order_by("timestamp__minute")
@@ -25,7 +30,7 @@ class UserProfileRetrieveView(views.APIView):
             profile["profile_picture"] = profile_picture_url
         except ObjectDoesNotExist:
             profile["profile_picture"] = None
-        imagesqueryset = imagesqueryset.filter(profile_picture=False)
+        imagesqueryset = imagesqueryset.filter(profile_picture=False, private=False)
         images = ImageSerializer(imagesqueryset, many=True).data
         jsonResponse = {
             "profile": profile,

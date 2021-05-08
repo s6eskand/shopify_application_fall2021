@@ -69,7 +69,7 @@ class ImageCreateViewTest(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["title"], "test title")
         self.assertEqual(response.data["caption"], "test caption")
-        self.assertEqual(response.data["profile_picture"], True)
+        self.assertTrue(response.data["profile_picture"])
 
     def test_valid_image_creation(self):
         request = self.factory.post(
@@ -81,7 +81,7 @@ class ImageCreateViewTest(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["title"], "test title")
         self.assertEqual(response.data["caption"], "test caption")
-        self.assertEqual(response.data["private"], False)
+        self.assertFalse(response.data["private"])
 
 
 # tests for image list endpoint
@@ -298,3 +298,36 @@ class ImageRetrievalViewTest(APITestCase):
         response = self.view(request, username="testuser")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["title"], "test title")
+
+    def test_image_retrieval_no_user(self):
+        request = self.factory.get("/images/missinguser?title=test title")
+        response = self.view(request, username="missinguser")
+        self.assertEqual(response.status_code, 404)
+
+    def test_image_retrieval_no_image(self):
+        request = self.factory.get("/images/testuser?title=missing image")
+        response = self.view(request, username="testuser")
+        self.assertEqual(response.status_code, 404)
+
+    def test_image_retrieval_no_query(self):
+        request = self.factory.get("/images/testuser")
+        response = self.view(request, username="testuser")
+        self.assertEqual(response.status_code, 404)
+
+    def test_image_retrieval_private_image(self):
+        Image.objects.create(
+            title="test title private",
+            caption="test caption",
+            owner=self.user,
+            private=True
+        )
+        request = self.factory.get("/images/testuser?title=test title private")
+        response = self.view(request, username="testuser")
+        self.assertEqual(response.status_code, 404)
+
+    def test_image_retrieval_private_account(self):
+        self.usersettings.private = True
+        self.usersettings.save()
+        request = self.factory.get("/images/testuser?title=test title")
+        response = self.view(request, username="testuser")
+        self.assertEqual(response.status_code, 404)

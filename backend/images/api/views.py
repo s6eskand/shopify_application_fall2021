@@ -9,6 +9,7 @@ from .serializers import ImageSerializer
 from ..models import Image
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.datastructures import MultiValueDictKeyError
 from usersettings.models import UserSetting
 
 
@@ -72,7 +73,7 @@ class ImageRetrieveView(views.APIView):
                     data=serializer.data,
                     status=status.HTTP_200_OK
                 )
-        except ObjectDoesNotExist or KeyError:
+        except (ObjectDoesNotExist, MultiValueDictKeyError):
             return response.Response(
                 status=status.HTTP_404_NOT_FOUND
             )
