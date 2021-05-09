@@ -15,3 +15,6 @@ This is an image repository built by Sam Eskanadr for the Shopify Fall 2021 Deve
   - Flask
   - Docker
   
+View images on the featured page, as well as other profiles via the search menu.
+
+![main](../readme-content/homepage.pn)
